@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { enemyIntentReadChance, gameReducer, getHeroStats, initialState } from './engine'
+import { createInitialState, enemyIntentReadChance, gameReducer, getHeroStats, initialState } from './engine'
 import type { GameState } from './types'
 
 function freshState(): GameState {
@@ -12,6 +12,47 @@ function selectFirstNode(state: GameState): GameState {
 }
 
 describe('game engine', () => {
+  it('replays the same actions identically for the same seed', () => {
+    let first = gameReducer(createInitialState(424242), { type: 'NEW_HERO' })
+    let second = gameReducer(createInitialState(424242), { type: 'NEW_HERO' })
+    first = gameReducer(first, { type: 'START_EXPEDITION', difficulty: 6 })
+    second = gameReducer(second, { type: 'START_EXPEDITION', difficulty: 6 })
+    const nodeId = first.expedition!.nodes.find((node) => node.depth === 0)!.id
+    const actions = [
+      { type: 'SELECT_NODE', nodeId },
+      { type: 'ENTER_NODE' },
+      { type: 'SELECT_ATTACK', zone: 'head' },
+      { type: 'SELECT_BLOCK', zone: 'body' },
+      { type: 'SELECT_TECHNIQUE', technique: 'heavy' },
+      { type: 'FIGHT' },
+    ] as const
+    actions.forEach((action) => {
+      first = gameReducer(first, action)
+      second = gameReducer(second, action)
+    })
+    expect(second).toEqual(first)
+    expect(first.seed).toBe(424242)
+    expect(first.actionSequence).toBe(actions.length + 2)
+  })
+
+  it('does not let an imported save resurrect a locally fallen hero', () => {
+    const living = gameReducer(createInitialState(10101), { type: 'NEW_HERO' })
+    const afterDeath = structuredClone(living)
+    afterDeath.view = 'dead'
+    afterDeath.fallen = [{
+      id: living.hero!.id,
+      name: living.hero!.name,
+      epithet: living.hero!.epithet,
+      level: living.hero!.level,
+      score: living.hero!.score,
+      victories: living.hero!.victories,
+      diedAt: living.actionSequence + 1,
+    }]
+    const result = gameReducer(afterDeath, { type: 'IMPORT_SAVE', state: living })
+    expect(result.view).toBe('dead')
+    expect(result.notice).toMatch(/откат смерти запрещён/i)
+  })
+
   it('uses relative agility to reveal enemy intent sometimes', () => {
     expect(enemyIntentReadChance(5, 5)).toBeCloseTo(0.25)
     expect(enemyIntentReadChance(10, 5)).toBeCloseTo(0.5)
@@ -57,6 +98,35 @@ describe('game engine', () => {
     expect(state.expedition?.reward).not.toBeNull()
     expect(state.hero!.victories).toBe(1)
     expect(state.hero!.score).toBeGreaterThan(0)
+  })
+
+  it('completes all eight depths and returns the hero home', () => {
+    let state = gameReducer(freshState(), { type: 'START_EXPEDITION', difficulty: 1 })
+    for (let guard = 0; guard < 80 && !state.expedition?.complete; guard += 1) {
+      const run = state.expedition!
+      if (run.reward) {
+        state = gameReducer(state, { type: 'TAKE_REWARD' })
+      } else if (run.event) {
+        state = gameReducer(state, { type: 'EVENT_CHOICE', index: 0 })
+      } else if (run.combat) {
+        state.hero!.base.strength = 100
+        run.combat.enemy.hp = 1
+        run.combat.enemy.agility = -100
+        state = gameReducer(state, { type: 'SELECT_ATTACK', zone: 'head' })
+        state = gameReducer(state, { type: 'SELECT_BLOCK', zone: state.expedition!.combat!.enemyIntent })
+        state = gameReducer(state, { type: 'FIGHT' })
+      } else if (run.selectedNodeId) {
+        state = gameReducer(state, { type: 'ENTER_NODE' })
+      } else {
+        state = selectFirstNode(state)
+      }
+    }
+    expect(state.expedition?.complete).toBe(true)
+    expect(state.expedition?.current).toBe(7)
+    state = gameReducer(state, { type: 'RETURN_HOME' })
+    expect(state.view).toBe('hub')
+    expect(state.expedition).toBeNull()
+    expect(state.hero!.victories).toBeGreaterThanOrEqual(4)
   })
 
   it('archives a dead hero and does not offer a rollback', () => {

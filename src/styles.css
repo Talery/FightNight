@@ -197,6 +197,9 @@ h1 em { color: var(--gold-bright); font-style: italic; }
 .action-card h3, .quest-card h3 { font: 700 21px var(--display); margin: 8px 0 12px; }
 .action-card p, .quest-card p { color: var(--muted); font-size: 10px; line-height: 1.6; flex: 1; }
 .action-card > b, .quest-card > b { color: var(--gold); font-size: 10px; margin-bottom: 13px; }
+.save-file-input { display: none; }
+.save-transfer-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.save-transfer-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .quest-card button + button { margin-top: 9px; }
 .quest-progress { height: 6px; background: #0b0b09; border: 1px solid var(--line); margin: 8px 0; }
 .quest-progress i { display: block; height: 100%; background: var(--gold); }

@@ -172,9 +172,10 @@ export interface LeaderboardEntry extends FallenHero {
 }
 
 export interface GameState {
-  version: 2
+  version: 3
   view: View
   seed: number
+  actionSequence: number
   hero: Hero | null
   expedition: Expedition | null
   quest: Quest | null
@@ -215,4 +216,5 @@ export type GameAction =
   | { type: 'CHOOSE_PERK'; perkId: string }
   | { type: 'DISMISS_NOTICE' }
   | { type: 'LOAD_LEADERBOARD'; entries: LeaderboardEntry[] }
-  | { type: 'RESET_SAVE' }
+  | { type: 'IMPORT_SAVE'; state: GameState }
+  | { type: 'RESET_SAVE'; seed?: number }
