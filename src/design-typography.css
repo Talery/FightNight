@@ -43,6 +43,19 @@
 :root[data-theme="ashen"] .section-cap > svg,
 :root[data-theme="ashen"] .section-cap > div { flex: 0 0 auto; }
 
+:root[data-theme="ashen"] .synergy-panel .section-cap > span:first-child {
+  font-size: 0;
+}
+
+:root[data-theme="ashen"] .synergy-panel .section-cap > span:first-child::before {
+  content: "Боевой стиль";
+  font-family: var(--fight-display);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .065em;
+}
+
 :root[data-theme="ashen"] .inventory-modal > .section-cap {
   min-height: 58px;
   padding-left: 30px;
@@ -72,6 +85,11 @@
     min-height: 42px;
     padding-left: 23px;
     padding-right: 20px;
+    font-size: 12px;
+    letter-spacing: .055em;
+  }
+
+  :root[data-theme="ashen"] .synergy-panel .section-cap > span:first-child::before {
     font-size: 12px;
     letter-spacing: .055em;
   }
