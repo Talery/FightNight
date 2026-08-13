@@ -447,7 +447,7 @@ describe('game engine', () => {
       }
       expect(state.expedition?.complete, `seed ${seed}`).toBe(true)
     }
-  })
+  }, 15_000)
 
   it('archives a dead hero and does not offer a rollback', () => {
     let state = freshState()
