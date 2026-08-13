@@ -1,0 +1,111 @@
+/* Ornamental frame pass v3. Separate from the base design layer on purpose. */
+:root[data-theme="ashen"] {
+  --ornate-edge:#9b7a45;
+  --ornate-bright:#c79c58;
+  --ornate-shadow:0 12px 28px rgba(0,0,0,.42);
+}
+
+:root[data-theme="ashen"] .panel-block,
+:root[data-theme="ashen"] .hero-card,
+:root[data-theme="ashen"] .destination,
+:root[data-theme="ashen"] .action-card,
+:root[data-theme="ashen"] .quest-card,
+:root[data-theme="ashen"] .shop-item,
+:root[data-theme="ashen"] .leaderboard,
+:root[data-theme="ashen"] .expedition-launch,
+:root[data-theme="ashen"] .run-header,
+:root[data-theme="ashen"] .combat-controls,
+:root[data-theme="ashen"] .combat-message,
+:root[data-theme="ashen"] .inventory-modal,
+:root[data-theme="ashen"] .perk-modal,
+:root[data-theme="ashen"] .consumable-confirm,
+:root[data-theme="ashen"] .run-debrief,
+:root[data-theme="ashen"] .notice {
+  border:1px solid var(--ornate-edge);
+  border-radius:0;
+  outline:1px solid rgba(75,58,34,.82);
+  outline-offset:-4px;
+  box-shadow:inset 0 0 0 1px rgba(7,7,6,.88),inset 0 0 0 4px rgba(216,181,108,.025),inset 4px 0 rgba(216,181,108,.035),var(--ornate-shadow);
+}
+
+:root[data-theme="ashen"] .paper-doll,
+:root[data-theme="ashen"] .perk-strip,
+:root[data-theme="ashen"] .synergy-panel,
+:root[data-theme="ashen"] .memory-panel,
+:root[data-theme="ashen"] .log-panel {
+  border-color:#a17e47;
+  box-shadow:inset 0 0 0 1px #0b0a08,inset 0 0 0 4px rgba(216,181,108,.025),0 9px 20px rgba(0,0,0,.38);
+}
+
+:root[data-theme="ashen"] .section-cap {
+  border-bottom-color:#a78148;
+  box-shadow:inset 0 1px rgba(255,235,187,.055),inset 0 -1px rgba(0,0,0,.7),0 3px 8px rgba(0,0,0,.2);
+}
+
+:root[data-theme="ashen"] .destination,
+:root[data-theme="ashen"] .action-card,
+:root[data-theme="ashen"] .quest-card,
+:root[data-theme="ashen"] .shop-item {
+  border-left-color:#b08a4c;
+  border-right-color:#6d5635;
+  box-shadow:inset 0 0 0 1px #0b0a08,inset 0 0 0 4px rgba(216,181,108,.025),inset 4px 0 rgba(216,181,108,.045),0 7px 16px rgba(0,0,0,.36);
+}
+
+:root[data-theme="ashen"] .destination:hover,
+:root[data-theme="ashen"] .action-card:hover,
+:root[data-theme="ashen"] .quest-card:hover,
+:root[data-theme="ashen"] .shop-item:hover {
+  border-color:var(--gold);
+  outline-color:rgba(151,112,55,.9);
+  box-shadow:inset 0 0 0 1px #0b0a08,inset 0 0 0 4px rgba(216,181,108,.045),inset 4px 0 rgba(216,181,108,.08),0 12px 26px rgba(0,0,0,.46),0 0 16px rgba(216,181,108,.055);
+}
+
+:root[data-theme="ashen"] .destination>span,
+:root[data-theme="ashen"] .route-icon,
+:root[data-theme="ashen"] .card-icon,
+:root[data-theme="ashen"] .heading-icon,
+:root[data-theme="ashen"] .level-medallion,
+:root[data-theme="ashen"] .doll-inventory-button {
+  border:1px solid var(--ornate-bright);
+  outline:1px solid rgba(57,43,25,.9);
+  outline-offset:-3px;
+  box-shadow:inset 0 0 0 1px #11100d,inset 0 1px rgba(255,235,187,.075),0 6px 14px rgba(0,0,0,.38);
+}
+
+:root[data-theme="ashen"] .gear-slot,
+:root[data-theme="ashen"] .inventory-item,
+:root[data-theme="ashen"] .inventory-empty,
+:root[data-theme="ashen"] .consumable-slots>button,
+:root[data-theme="ashen"] .consumable-empty,
+:root[data-theme="ashen"] .run-node,
+:root[data-theme="ashen"] .perk-choice-grid button,
+:root[data-theme="ashen"] .death-stats span {
+  border:1px solid #79613c;
+  border-radius:0;
+  outline:1px solid rgba(49,39,25,.9);
+  outline-offset:-3px;
+  box-shadow:inset 0 0 0 1px rgba(7,7,6,.8),0 4px 10px rgba(0,0,0,.28);
+}
+
+:root[data-theme="ashen"] .stats-grid,
+:root[data-theme="ashen"] .quest-progress,
+:root[data-theme="ashen"] .log-list,
+:root[data-theme="ashen"] .item-detail,
+:root[data-theme="ashen"] .item-compare,
+:root[data-theme="ashen"] .inventory-modal .inventory-hint,
+:root[data-theme="ashen"] .synergy-list>span,
+:root[data-theme="ashen"] .memory-list>span,
+:root[data-theme="ashen"] .mutation-row>span {
+  border:1px solid #685437;
+  border-radius:0;
+  outline:1px solid rgba(42,34,23,.9);
+  outline-offset:-3px;
+  background:linear-gradient(145deg,rgba(31,28,22,.82),rgba(11,11,9,.9));
+  box-shadow:inset 0 0 0 1px rgba(8,8,7,.72);
+}
+
+:root[data-theme="ashen"] .combat-controls {
+  border-color:#b08a4d;
+  outline-color:rgba(92,68,38,.9);
+  box-shadow:inset 0 0 0 1px #090807,inset 0 0 0 4px rgba(216,181,108,.035),0 10px 24px rgba(0,0,0,.45);
+}
