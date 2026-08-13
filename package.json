@@ -11,7 +11,7 @@
     "simulate": "vitest run src/game/simulation.report.test.ts --reporter=verbose",
     "package:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-windows.ps1",
     "preview": "vite preview",
-    "test": "vitest run --exclude src/game/simulation.report.test.ts --exclude e2e/** --exclude pwa-e2e/**",
+    "test": "vitest run --exclude \"src/game/simulation.report.test.ts\" --exclude \"e2e/**\" --exclude \"pwa-e2e/**\"",
     "test:e2e": "playwright test --reporter=list",
     "test:pwa": "playwright test --config playwright.pwa.config.ts --reporter=list"
   },
