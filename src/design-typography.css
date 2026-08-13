@@ -1,0 +1,78 @@
+:root[data-theme="ashen"] {
+  --fight-display: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, "Times New Roman", serif;
+  --fight-ui: "Segoe UI", Tahoma, Arial, sans-serif;
+  --display: var(--fight-display);
+}
+
+:root[data-theme="ashen"] .section-cap {
+  min-height: 46px;
+  padding: 0 24px 0 27px;
+  gap: 12px;
+  overflow: hidden;
+  color: #e1d2b2;
+  font-family: var(--fight-display);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .065em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 1px #000, 0 0 10px rgba(216, 181, 108, .08);
+}
+
+:root[data-theme="ashen"] .section-cap::after { display: none; }
+
+:root[data-theme="ashen"] .section-cap > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+:root[data-theme="ashen"] .section-cap > b,
+:root[data-theme="ashen"] .section-cap > small {
+  flex: 0 0 auto;
+  font-family: var(--fight-ui);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+
+:root[data-theme="ashen"] .section-cap > b { color: var(--gold-bright); }
+:root[data-theme="ashen"] .section-cap > svg,
+:root[data-theme="ashen"] .section-cap > div { flex: 0 0 auto; }
+
+:root[data-theme="ashen"] .inventory-modal > .section-cap {
+  min-height: 58px;
+  padding-left: 30px;
+  padding-right: 22px;
+}
+
+:root[data-theme="ashen"] .synergy-list > span > b,
+:root[data-theme="ashen"] .memory-list > span > b,
+:root[data-theme="ashen"] .hero-identity h2,
+:root[data-theme="ashen"] .action-card h3,
+:root[data-theme="ashen"] .quest-card h3,
+:root[data-theme="ashen"] .item-detail h4 {
+  font-family: var(--fight-display);
+  font-weight: 700;
+}
+
+:root[data-theme="ashen"] .synergy-list > span > b {
+  font-size: 12px;
+  letter-spacing: .01em;
+}
+
+:root[data-theme="ashen"] .synergy-list > span > i,
+:root[data-theme="ashen"] .synergy-list > span > small { font-family: var(--fight-ui); }
+
+@media (max-width: 800px) {
+  :root[data-theme="ashen"] .section-cap {
+    min-height: 42px;
+    padding-left: 23px;
+    padding-right: 20px;
+    font-size: 12px;
+    letter-spacing: .055em;
+  }
+}
