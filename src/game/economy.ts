@@ -6,11 +6,13 @@ import type { Item, Quest } from './types'
 export function createQuest(rng: SeededRng, level: number): Quest {
   const goal = rng.int(3, 5) + Math.floor(level / 4)
   const minDifficulty = Math.min(10, Math.max(1, rng.int(1, Math.ceil(level / 2) + 2)))
+  const faction = rng.pick(contentRegistry.enemyFactions).name
   return {
     id: deterministicId(rng, 'quest'),
-    name: rng.pick(contentRegistry.questVerbs),
-    description: `Победить ${goal} противников в походах сложности ${minDifficulty} или выше.`,
+    name: rng.pick(contentRegistry.questTemplates),
+    description: `Работа для фракции «${faction}»: победить ${goal} противников в походах сложности ${minDifficulty} или выше.`,
     goal, progress: 0, minDifficulty,
+    faction,
     rewardGold: 20 + goal * 9 + minDifficulty * 4,
     rewardScore: 35 + goal * 12 + minDifficulty * 8,
     complete: false,

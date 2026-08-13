@@ -1,9 +1,11 @@
 import { generateItem } from './items'
+import { balance } from './balance'
 import { getActivePerks, getHeroStats, killHero } from './progression'
 import type { SeededRng } from './random'
 import { contentRegistry } from './registry'
-import { addLog, advanceNode, modifierTotal, runLuck, runScore } from './state'
+import { addLog, modifierTotal, runLuck, runScore } from './state'
 import type { GameState, RunModifier } from './types'
+import { recordWorldMemoryChoice } from './world-memory'
 
 function addRandomModifier(state: GameState, rng: SeededRng, tone: RunModifier['tone']): RunModifier {
   const expedition = state.expedition!
@@ -25,7 +27,7 @@ export function resolveEvent(state: GameState, index: number, rng: SeededRng): v
   switch (choice.kind) {
     case 'heal': {
       const penalty = expedition.condition === 'Гнилой воздух' ? 0.55 : 1
-      const amount = Math.max(1, Math.round(choice.value * penalty * (1 + modifierTotal(expedition, 'healing'))))
+      const amount = Math.max(1, Math.round(choice.value * penalty * expedition.biome.healingMultiplier * (1 + modifierTotal(expedition, 'healing'))))
       hero.hp = Math.min(stats.maxHp, hero.hp + amount)
       result = `Восстановлено ${amount} здоровья.`
       break
@@ -43,6 +45,15 @@ export function resolveEvent(state: GameState, index: number, rng: SeededRng): v
       expedition.earnedGold += choice.value + expedition.difficulty * 2
       result = `Найдено ${choice.value + expedition.difficulty * 2} золота.`
       break
+    case 'material':
+      hero.materials.scrap += choice.value
+      if (choice.value >= 5) hero.materials.ember += 1
+      result = `Получено ${choice.value} обломков${choice.value >= 5 ? ' и 1 уголёк' : ''}.`
+      break
+    case 'sigil':
+      expedition.sigils = Math.min(expedition.sigilsRequired, expedition.sigils + choice.value)
+      result = `Получена печать пути: ${expedition.sigils}/${expedition.sigilsRequired}.`
+      break
     case 'score': {
       if (hero.gold >= 8) hero.gold -= 8
       const gained = runScore(expedition, choice.value)
@@ -52,8 +63,8 @@ export function resolveEvent(state: GameState, index: number, rng: SeededRng): v
       break
     }
     case 'item':
-      hero.inventory.push(generateItem(rng, expedition.difficulty, runLuck(hero, expedition, stats.luck)))
-      result = 'Найден новый предмет.'
+      if (hero.inventory.length >= balance.inventoryCapacity) result = 'Сумка полна: находку пришлось оставить.'
+      else { hero.inventory.push(generateItem(rng, expedition.difficulty, runLuck(hero, expedition, stats.luck))); result = 'Найден новый предмет.' }
       break
     case 'gamble': {
       const lucky = rng.chance(0.43 + runLuck(hero, expedition, stats.luck) * 0.025 + (getActivePerks(hero).has('loaded-dice') ? 0.16 : 0))
@@ -79,12 +90,18 @@ export function resolveEvent(state: GameState, index: number, rng: SeededRng): v
     case 'curse': {
       const boon = addRandomModifier(state, rng, 'boon')
       const curse = addRandomModifier(state, rng, 'curse')
-      hero.inventory.push(generateItem(rng, expedition.difficulty + 3, runLuck(hero, expedition, stats.luck)))
-      result = `Дар «${boon.name}» принят вместе с проклятием «${curse.name}». В сумке появился сильный предмет.`
+      const mutationPool = contentRegistry.heroMutations.filter((mutation) => !hero.mutations.includes(mutation.id))
+      const mutation = mutationPool.length && rng.chance(0.45) ? rng.pick(mutationPool) : null
+      if (mutation) hero.mutations.push(mutation.id)
+      if (hero.inventory.length >= balance.inventoryCapacity) result = `Дар «${boon.name}» принят вместе с проклятием «${curse.name}», но сумка не вместила награду.`
+      else { hero.inventory.push(generateItem(rng, expedition.difficulty + 3, runLuck(hero, expedition, stats.luck))); result = `Дар «${boon.name}» принят вместе с проклятием «${curse.name}». В сумке появился сильный предмет.` }
+      if (mutation) result += ` Тело меняется: «${mutation.name}».`
       break
     }
   }
-  addLog(state, `${expedition.event!.title}: ${result}`, hero.hp <= 0 ? 'bad' : 'plain')
+  result += recordWorldMemoryChoice(hero, expedition.event!.title, index)
+  const tone = hero.hp <= 0 || choice.kind === 'hurt' ? 'bad' : choice.kind === 'gold' || choice.kind === 'item' || choice.kind === 'boon' || choice.kind === 'sigil' ? 'good' : 'plain'
+  expedition.event!.outcome = { choiceLabel: choice.label, result, tone }
+  addLog(state, `${expedition.event!.title} · ${choice.label}: ${result}`, tone)
   if (hero.hp <= 0 && killHero(state, 'не пережил опасную встречу')) return
-  advanceNode(state)
 }

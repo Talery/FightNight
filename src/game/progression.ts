@@ -4,7 +4,13 @@ import { generateItem } from './items'
 import { deterministicId, type SeededRng } from './random'
 import { contentRegistry } from './registry'
 import { addLog } from './state'
-import type { Attribute, FallenHero, GameState, Hero, StatBlock } from './types'
+import type { AbilityId, Attribute, FallenHero, GameState, Hero, StatBlock, WeaponStyle } from './types'
+
+const abilityPerks: Record<AbilityId, string> = {
+  bloodletter: 'blood-price',
+  guardBreak: 'tree-strength-2',
+  secondWind: 'second-breath',
+}
 
 export function getHeroStats(hero: Hero): StatBlock {
   const total = { ...hero.base }
@@ -13,12 +19,20 @@ export function getHeroStats(hero: Hero): StatBlock {
     if (!item) continue
     for (const [key, value] of Object.entries(item.stats) as [keyof StatBlock, number][]) total[key] += value
   }
+  const equipped = hero.inventory.filter((item) => Object.values(hero.equipment).includes(item.id))
+  for (const set of contentRegistry.itemSets) {
+    if (equipped.filter((item) => item.setId === set.id).length >= set.required) {
+      for (const [stat, value] of Object.entries(set.bonus) as [keyof StatBlock, number][]) total[stat] += value
+    }
+  }
   const activePerks = getActivePerks(hero)
-  if (activePerks.has('iron-hide')) total.armor += 2
-  if (activePerks.has('grave-luck')) total.luck += 2
-  if (activePerks.has('wolf-sinew')) total.strength += 2
-  if (activePerks.has('rat-step')) total.agility += 2
-  if (activePerks.has('thick-blood')) total.maxHp += 18
+  for (const perk of contentRegistry.perks) {
+    if (!activePerks.has(perk.id) || !perk.statBonus) continue
+    for (const [stat, value] of Object.entries(perk.statBonus) as [keyof StatBlock, number][]) total[stat] += value
+  }
+  for (const mutation of contentRegistry.heroMutations.filter((candidate) => hero.mutations.includes(candidate.id))) {
+    for (const [stat, value] of Object.entries(mutation.statBonus) as [keyof StatBlock, number][]) total[stat] += value
+  }
   return total
 }
 
@@ -31,17 +45,32 @@ export function getActivePerks(hero: Hero): Set<string> {
   return result
 }
 
+export function getUnlockedAbilities(hero: Hero): AbilityId[] {
+  const perks = getActivePerks(hero)
+  return (Object.keys(abilityPerks) as AbilityId[]).filter((ability) => perks.has(abilityPerks[ability]))
+}
+
+export function hasUnlockedAbility(hero: Hero, ability: AbilityId): boolean {
+  return getActivePerks(hero).has(abilityPerks[ability])
+}
+
+export function getWeaponStyle(hero: Hero): WeaponStyle {
+  const weapon = hero.inventory.find((item) => item.id === hero.equipment.weapon)
+  return weapon?.weaponStyle ?? 'blade'
+}
+
 export function enemyIntentReadChance(heroAgility: number, enemyAgility: number): number {
   return Math.max(0.08, Math.min(0.75, 0.25 + (heroAgility - enemyAgility) * 0.05))
 }
 
 export function canReadEnemyIntent(rng: SeededRng, hero: Hero, enemyAgility: number): boolean {
-  return rng.chance(enemyIntentReadChance(getHeroStats(hero).agility, enemyAgility))
+  const perkBonus = getActivePerks(hero).has('rat-step') ? 0.2 : 0
+  return rng.chance(Math.min(0.95, enemyIntentReadChance(getHeroStats(hero).agility, enemyAgility) + perkBonus))
 }
 
 export function rollPerkChoices(state: GameState, rng: SeededRng): void {
   if (!state.hero || state.hero.pendingPerks <= 0 || state.perkChoices.length) return
-  const pool = contentRegistry.perks.filter((perk) => !state.hero!.perks.includes(perk.id))
+  const pool = contentRegistry.perks.filter((perk) => !state.hero!.perks.includes(perk.id) && (perk.requires ?? []).every((required) => state.hero!.perks.includes(required)))
   const choices: string[] = []
   while (pool.length && choices.length < 3) {
     choices.push(pool.splice(rng.int(0, pool.length - 1), 1)[0].id)
@@ -68,15 +97,31 @@ export function gainExperience(state: GameState, amount: number, rng: SeededRng)
 
 export function killHero(state: GameState, cause: string): boolean {
   const hero = state.hero!
+  if (state.expedition?.tutorial) {
+    hero.hp = 1
+    addLog(state, 'Учебное оружие останавливается у горла. Герой остаётся в строю.', 'plain')
+    return false
+  }
   if (getActivePerks(hero).has('last-word') && !hero.lastWordUsed) {
     hero.lastWordUsed = true
     hero.hp = 1
     addLog(state, 'Последнее слово удерживает бойца на границе смерти.', 'gold')
     return false
   }
+  if (state.expedition?.daily && state.dailyReturnHero) {
+    state.hero = state.dailyReturnHero
+    state.dailyReturnHero = null
+    state.expedition = null
+    state.view = 'hub'
+    state.notice = `Ежедневный забег завершён поражением: ${cause}. Кампания бойца не затронута.`
+    addLog(state, `Ежедневный претендент пал: ${cause}. Результат не меняет судьбу героя кампании.`, 'bad')
+    return true
+  }
+  const bestItem = [...hero.inventory].sort((left, right) => right.value - left.value)[0]
+  const epitaph = hero.score >= 500 ? 'Его имя ещё долго повторяли у костров.' : hero.victories >= 8 ? 'Он дошёл дальше, чем обещала осторожность.' : 'Пепел помнит даже короткий огонь.'
   const fallen: FallenHero = {
     id: hero.id, name: hero.name, epithet: hero.epithet, level: hero.level,
-    score: hero.score, victories: hero.victories, diedAt: state.actionSequence,
+    score: hero.score, victories: hero.victories, diedAt: state.actionSequence, cause, perks: [...hero.perks], mutations: [...hero.mutations], bestItem: bestItem?.name, epitaph,
   }
   state.fallen = [fallen, ...state.fallen].sort((a, b) => b.score - a.score).slice(0, balance.maxFallenHeroes)
   state.view = 'dead'
@@ -93,8 +138,8 @@ export function createHero(state: GameState, rng: SeededRng): GameState {
     epithet: joke ? 'по ошибке допущенный к Кругу' : rng.pick(contentRegistry.epithets),
     level: 1, xp: 0, xpToNext: balance.startingXpTarget, hp: balance.startingHp,
     base: { strength: 5, agility: 5, luck: 3, armor: 0, maxHp: balance.startingHp },
-    unspent: 0, pendingPerks: 0, perks: [], inventory: [], equipment: {},
-    gold: balance.startingGold, score: 0, victories: 0, deepest: 0,
+    unspent: 0, pendingPerks: 0, perks: [], mutations: [], nemeses: [], reputation: {}, decisionFlags: {}, npcRelations: {}, inventory: [], equipment: {},
+    gold: balance.startingGold, materials: { scrap: 0, ember: 0, essence: 0 }, score: 0, victories: 0, deepest: 0,
     createdAt: state.actionSequence, lastWordUsed: false,
   }
   const starter = generateItem(rng, 1)
@@ -105,6 +150,7 @@ export function createHero(state: GameState, rng: SeededRng): GameState {
   starter.name = 'Зазубренный меч должника'
   starter.stats = { strength: 1 }
   starter.value = 6
+  starter.weaponStyle = 'blade'
   hero.inventory.push(starter, generateItem(rng, 1, 0, true))
   hero.equipment.weapon = starter.id
   const next: GameState = {

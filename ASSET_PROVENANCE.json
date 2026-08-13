@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "sets": [
+    { "directory": "audio", "source": "FightNight deterministic local synthesis", "license": "Project original" },
+    { "directory": "biomes", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "bosses", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "events", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "relics", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "dark-fighters", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "items-v2", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "talents", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "ui", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "cc0-dungeon", "source": "The Outlander — 16 Free Dungeon Backgrounds", "license": "CC0-1.0" },
+    { "directory": "rpg-icons", "source": "Henrique Lazarini (7Soul1) — 496 pixel art RPG icons", "license": "CC0-1.0" },
+    { "directory": "kenney-ui-adventure", "source": "Kenney — UI Pack: Adventure", "license": "CC0-1.0" }
+  ]
+}

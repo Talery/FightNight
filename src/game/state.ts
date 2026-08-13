@@ -35,6 +35,15 @@ export function advanceNode(state: GameState): void {
   expedition.combat = null
   expedition.event = null
   expedition.reward = null
+  expedition.rewardChoices = []
+  if (expedition.victoryCondition === 'sigils' && expedition.sigils >= expedition.sigilsRequired) {
+    expedition.complete = true
+    const finishScore = runScore(expedition, expedition.difficulty * 28)
+    state.hero!.score += finishScore
+    expedition.earnedScore += finishScore
+    addLog(state, `${expedition.name} завершены через печати пути. Круг присуждает ${finishScore} очков.`, 'gold')
+    return
+  }
   const lastDepth = Math.max(...expedition.nodes.map((candidate) => candidate.depth))
   if (expedition.current >= lastDepth) {
     expedition.complete = true
