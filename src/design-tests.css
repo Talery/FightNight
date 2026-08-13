@@ -1,0 +1,397 @@
+/*
+ * Design-test layer for the ashen theme.
+ *
+ * The combatant nameplate is the visual reference: dark directional metal,
+ * warm brass edges, hard corners and a compact hierarchy.  This file stays
+ * separate from styles.css so the experiment is easy to review or remove.
+ */
+
+:root[data-theme="ashen"] {
+  --fight-frame: url('./assets/ui/combat-nameplate-frame.png');
+  --fight-panel: rgba(17, 16, 13, .965);
+  --fight-panel-soft: rgba(26, 24, 19, .94);
+  --fight-edge: #5d4d34;
+  --fight-edge-hot: #9b7a45;
+  --fight-edge-faint: rgba(216, 181, 108, .16);
+  --fight-shadow: 0 11px 24px rgba(0, 0, 0, .38);
+  --fight-shadow-small: 0 5px 12px rgba(0, 0, 0, .32);
+}
+
+/* Shell ------------------------------------------------------------------ */
+:root[data-theme="ashen"] .top-bar {
+  border-bottom-color: var(--fight-edge);
+  background:
+    linear-gradient(180deg, rgba(31, 28, 22, .985), rgba(13, 13, 11, .985)),
+    var(--kenney-panel-detail);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .28), inset 0 -1px rgba(216, 181, 108, .08);
+}
+
+:root[data-theme="ashen"] .left-sidebar,
+:root[data-theme="ashen"] .right-sidebar {
+  background:
+    linear-gradient(180deg, rgba(20, 19, 16, .985), rgba(12, 12, 10, .995)),
+    var(--kenney-panel);
+  background-size: auto, 72px 72px;
+}
+
+:root[data-theme="ashen"] .left-sidebar { border-right-color: var(--fight-edge); }
+:root[data-theme="ashen"] .right-sidebar { border-left-color: var(--fight-edge); }
+
+:root[data-theme="ashen"] .mobile-nav {
+  border-bottom-color: var(--fight-edge);
+  background: rgba(17, 16, 13, .985);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, .28);
+}
+
+:root[data-theme="ashen"] .mobile-nav button {
+  border-right-color: rgba(155, 122, 69, .3);
+}
+
+:root[data-theme="ashen"] .mobile-nav button.active {
+  color: var(--gold-bright);
+  background: linear-gradient(180deg, #33291b, #201b15);
+  box-shadow: inset 0 -2px var(--gold);
+}
+
+:root[data-theme="ashen"] .top-resources > span {
+  border-left-color: rgba(155, 122, 69, .32);
+}
+
+:root[data-theme="ashen"] .top-resources .sync-pill,
+:root[data-theme="ashen"] .theme-toggle {
+  border-color: var(--fight-edge-hot);
+  background: linear-gradient(180deg, #29241b, #171511);
+  box-shadow: var(--fight-shadow-small), inset 0 0 0 1px rgba(255, 238, 193, .035);
+}
+
+/* Shared framed surfaces ------------------------------------------------- */
+:root[data-theme="ashen"] .panel-block,
+:root[data-theme="ashen"] .hero-card,
+:root[data-theme="ashen"] .destination,
+:root[data-theme="ashen"] .action-card,
+:root[data-theme="ashen"] .quest-card,
+:root[data-theme="ashen"] .shop-item,
+:root[data-theme="ashen"] .leaderboard,
+:root[data-theme="ashen"] .expedition-launch,
+:root[data-theme="ashen"] .run-header,
+:root[data-theme="ashen"] .combat-controls,
+:root[data-theme="ashen"] .combat-message,
+:root[data-theme="ashen"] .inventory-modal,
+:root[data-theme="ashen"] .perk-modal,
+:root[data-theme="ashen"] .consumable-confirm,
+:root[data-theme="ashen"] .run-debrief {
+  border: 1px solid var(--fight-edge-hot);
+  border-radius: 0;
+  background-color: var(--fight-panel);
+  background-image:
+    linear-gradient(145deg, rgba(38, 34, 26, .97), rgba(15, 15, 12, .985) 62%),
+    var(--kenney-panel-detail);
+  background-size: auto, 72px 72px;
+  box-shadow:
+    inset 0 0 0 1px rgba(7, 7, 6, .86),
+    inset 0 1px rgba(245, 215, 146, .055),
+    var(--fight-shadow);
+}
+
+:root[data-theme="ashen"] .panel-block,
+:root[data-theme="ashen"] .hero-card,
+:root[data-theme="ashen"] .destination,
+:root[data-theme="ashen"] .action-card,
+:root[data-theme="ashen"] .quest-card,
+:root[data-theme="ashen"] .shop-item,
+:root[data-theme="ashen"] .leaderboard,
+:root[data-theme="ashen"] .expedition-launch {
+  border-left-color: #aa8247;
+  border-right-color: #493d2d;
+}
+
+:root[data-theme="ashen"] .section-cap {
+  position: relative;
+  min-height: 40px;
+  color: #cfc3a8;
+  border-bottom: 1px solid var(--fight-edge-hot);
+  background-color: #171511;
+  background-image:
+    linear-gradient(90deg, rgba(216, 181, 108, .11), transparent 24%, transparent 76%, rgba(216, 181, 108, .05)),
+    var(--fight-frame);
+  background-position: center;
+  background-size: auto, 100% 100%;
+  background-repeat: no-repeat;
+  text-shadow: 0 1px 2px #000;
+}
+
+:root[data-theme="ashen"] .section-cap::after {
+  content: "";
+  width: 34px;
+  height: 1px;
+  margin-left: 10px;
+  flex: 0 0 auto;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  box-shadow: 0 0 7px rgba(216, 181, 108, .25);
+}
+
+/* Home / location cards ------------------------------------------------- */
+:root[data-theme="ashen"] .destination {
+  padding: 14px;
+  box-shadow:
+    inset 0 0 0 1px rgba(7, 7, 6, .82),
+    inset 4px 0 rgba(216, 181, 108, .045),
+    var(--fight-shadow-small);
+}
+
+:root[data-theme="ashen"] .destination:hover,
+:root[data-theme="ashen"] .action-card:hover,
+:root[data-theme="ashen"] .quest-card:hover {
+  border-color: var(--gold);
+  background-image:
+    linear-gradient(145deg, rgba(47, 40, 29, .98), rgba(18, 17, 14, .99) 68%),
+    var(--kenney-panel-detail);
+  box-shadow:
+    inset 0 0 0 1px #0a0908,
+    0 0 0 1px rgba(216, 181, 108, .09),
+    0 10px 22px rgba(0, 0, 0, .4);
+}
+
+:root[data-theme="ashen"] .destination > span,
+:root[data-theme="ashen"] .route-icon,
+:root[data-theme="ashen"] .card-icon,
+:root[data-theme="ashen"] .heading-icon,
+:root[data-theme="ashen"] .level-medallion {
+  border: 1px solid var(--fight-edge-hot);
+  background-color: #282219;
+  background-image:
+    radial-gradient(circle at 42% 35%, rgba(216, 181, 108, .13), transparent 45%),
+    var(--kenney-hex);
+  background-size: auto, 100% 100%;
+  box-shadow: inset 0 0 0 1px #11100d, 0 4px 10px rgba(0, 0, 0, .34);
+}
+
+:root[data-theme="ashen"] .screen-heading {
+  border-bottom-color: rgba(155, 122, 69, .42);
+}
+
+:root[data-theme="ashen"] .screen-heading h1,
+:root[data-theme="ashen"] .hub-welcome h1,
+:root[data-theme="ashen"] .node-gate h1,
+:root[data-theme="ashen"] .event-encounter h1,
+:root[data-theme="ashen"] .complete-encounter h1,
+:root[data-theme="ashen"] .death-screen h1,
+:root[data-theme="ashen"] .perk-modal h1 {
+  text-shadow: 0 3px 14px rgba(0, 0, 0, .76);
+}
+
+/* Buttons and controls -------------------------------------------------- */
+:root[data-theme="ashen"] .primary-button,
+:root[data-theme="ashen"] .secondary-button,
+:root[data-theme="ashen"] .fight-button,
+:root[data-theme="ashen"] .choice-group button,
+:root[data-theme="ashen"] .technique-group button,
+:root[data-theme="ashen"] .event-choices button,
+:root[data-theme="ashen"] .path-options button,
+:root[data-theme="ashen"] .combat-utility button,
+:root[data-theme="ashen"] .item-actions button,
+:root[data-theme="ashen"] .shop-item > button,
+:root[data-theme="ashen"] .modal-close,
+:root[data-theme="ashen"] .accessibility-panel button,
+:root[data-theme="ashen"] .accessibility-panel select {
+  border: 1px solid var(--fight-edge-hot);
+  border-radius: 0;
+  background: linear-gradient(180deg, #30281d, #181511);
+  box-shadow:
+    inset 0 0 0 1px rgba(8, 8, 7, .82),
+    inset 0 1px rgba(255, 231, 177, .07),
+    3px 3px 0 rgba(5, 5, 4, .52);
+  text-shadow: 0 1px 2px #000;
+}
+
+:root[data-theme="ashen"] .primary-button,
+:root[data-theme="ashen"] .fight-button {
+  color: #f7e5ba;
+  border-color: #b18a4e;
+  background:
+    linear-gradient(180deg, rgba(111, 77, 37, .96), rgba(56, 39, 23, .98)),
+    var(--fight-frame) center / 100% 100% no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(31, 19, 10, .92),
+    inset 0 1px rgba(255, 231, 177, .1),
+    4px 4px 0 rgba(5, 5, 4, .58);
+}
+
+:root[data-theme="ashen"] .primary-button:hover:not(:disabled),
+:root[data-theme="ashen"] .fight-button:hover:not(:disabled),
+:root[data-theme="ashen"] .choice-group button:hover:not(:disabled),
+:root[data-theme="ashen"] .technique-group button:hover:not(:disabled),
+:root[data-theme="ashen"] .path-options button:hover:not(:disabled),
+:root[data-theme="ashen"] .combat-utility button:hover:not(:disabled) {
+  border-color: var(--gold-bright);
+  filter: brightness(1.08);
+}
+
+:root[data-theme="ashen"] .choice-group button.selected,
+:root[data-theme="ashen"] .technique-group button.selected,
+:root[data-theme="ashen"] .path-options button.selected,
+:root[data-theme="ashen"] .accessibility-panel button.selected {
+  color: var(--gold-bright);
+  border-color: var(--gold);
+  background: linear-gradient(180deg, #443521, #241c14);
+  box-shadow:
+    inset 3px 0 var(--gold),
+    inset 0 0 0 1px #0c0b09,
+    3px 3px 0 rgba(5, 5, 4, .55);
+}
+
+:root[data-theme="ashen"] .inventory-tools select,
+:root[data-theme="ashen"] .accessibility-panel select,
+:root[data-theme="ashen"] .accessibility-panel input {
+  border-color: var(--fight-edge);
+  border-radius: 0;
+  background: #11100d;
+  box-shadow: inset 0 0 0 1px #070706;
+}
+
+/* Inventory, shop and data-heavy UI ------------------------------------ */
+:root[data-theme="ashen"] .stats-grid,
+:root[data-theme="ashen"] .inventory-item,
+:root[data-theme="ashen"] .inventory-empty,
+:root[data-theme="ashen"] .shop-icon,
+:root[data-theme="ashen"] .quest-progress,
+:root[data-theme="ashen"] .log-list,
+:root[data-theme="ashen"] .item-detail,
+:root[data-theme="ashen"] .item-compare {
+  border-color: var(--fight-edge);
+  border-radius: 0;
+  background-color: rgba(12, 12, 10, .82);
+  box-shadow: inset 0 0 0 1px rgba(216, 181, 108, .025);
+}
+
+:root[data-theme="ashen"] .stat-cell {
+  border-color: rgba(93, 77, 52, .78);
+  background: linear-gradient(135deg, rgba(35, 31, 23, .72), rgba(12, 12, 10, .78));
+}
+
+:root[data-theme="ashen"] .inventory-item:hover,
+:root[data-theme="ashen"] .inventory-item.selected {
+  border-color: var(--gold);
+  background: linear-gradient(145deg, #342a1c, #17130f);
+  box-shadow: inset 3px 0 var(--gold), 0 7px 14px rgba(0, 0, 0, .28);
+}
+
+:root[data-theme="ashen"] .inventory-modal .item-detail,
+:root[data-theme="ashen"] .inventory-modal .inventory-hint {
+  border-left-color: var(--fight-edge);
+  background: linear-gradient(160deg, rgba(27, 24, 18, .86), rgba(11, 11, 9, .92));
+}
+
+/* Expedition ------------------------------------------------------------ */
+:root[data-theme="ashen"] .run-header {
+  border-color: var(--fight-edge-hot);
+  box-shadow: inset 0 -1px rgba(216, 181, 108, .08), var(--fight-shadow-small);
+}
+
+:root[data-theme="ashen"] .run-node {
+  border-color: var(--fight-edge);
+  background: #171511;
+  box-shadow: inset 0 0 0 1px #090908, 0 4px 10px rgba(0, 0, 0, .25);
+}
+
+:root[data-theme="ashen"] .run-node.current,
+:root[data-theme="ashen"] .run-stage.active .run-node.current {
+  border-color: var(--gold);
+  box-shadow: inset 0 0 0 1px #090908, 0 0 0 1px rgba(216, 181, 108, .14), 0 5px 14px rgba(0, 0, 0, .35);
+}
+
+:root[data-theme="ashen"] .node-gate,
+:root[data-theme="ashen"] .event-encounter,
+:root[data-theme="ashen"] .reward-encounter,
+:root[data-theme="ashen"] .complete-encounter {
+  filter: saturate(.96);
+}
+
+:root[data-theme="ashen"] .combat-controls,
+:root[data-theme="ashen"] .combat-message {
+  border-color: var(--fight-edge-hot);
+}
+
+:root[data-theme="ashen"] .combat-message {
+  background-image:
+    linear-gradient(90deg, rgba(44, 37, 26, .95), rgba(19, 18, 14, .98)),
+    var(--fight-frame);
+  background-size: auto, 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+:root[data-theme="ashen"] .combat-utility {
+  border-top-color: rgba(155, 122, 69, .32);
+}
+
+/* Overlays -------------------------------------------------------------- */
+:root[data-theme="ashen"] .modal-backdrop,
+:root[data-theme="ashen"] .inventory-backdrop {
+  background: rgba(4, 4, 3, .82);
+  backdrop-filter: blur(4px) saturate(.8);
+}
+
+:root[data-theme="ashen"] .perk-choice-grid button {
+  border: 1px solid var(--fight-edge);
+  border-radius: 0;
+  background: linear-gradient(155deg, #272219, #12110e);
+  box-shadow: inset 0 0 0 1px #090908, var(--fight-shadow-small);
+}
+
+:root[data-theme="ashen"] .perk-choice-grid button:hover {
+  border-color: var(--gold);
+  background: linear-gradient(155deg, #3a2e1d, #18140f);
+  transform: translateY(-2px);
+}
+
+:root[data-theme="ashen"] .notice {
+  border: 1px solid var(--fight-edge-hot);
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(54, 42, 25, .98), rgba(20, 18, 14, .985)),
+    var(--fight-frame) center / 100% 100% no-repeat;
+  box-shadow: inset 0 0 0 1px #0b0a08, 0 12px 32px rgba(0, 0, 0, .48);
+}
+
+:root[data-theme="ashen"] .death-stats span {
+  border: 1px solid var(--fight-edge-hot);
+  border-radius: 0;
+  background: linear-gradient(155deg, #292218, #12110e);
+  box-shadow: inset 0 0 0 1px #090908, var(--fight-shadow-small);
+}
+
+/* Accessibility: retain readable focus even with the heavier framing. */
+:root[data-theme="ashen"] button:focus-visible,
+:root[data-theme="ashen"] input:focus-visible,
+:root[data-theme="ashen"] select:focus-visible,
+:root[data-theme="ashen"] [tabindex="0"]:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
+}
+
+@media (max-width: 800px) {
+  :root[data-theme="ashen"] .panel-block,
+  :root[data-theme="ashen"] .hero-card,
+  :root[data-theme="ashen"] .destination,
+  :root[data-theme="ashen"] .action-card,
+  :root[data-theme="ashen"] .quest-card,
+  :root[data-theme="ashen"] .shop-item,
+  :root[data-theme="ashen"] .leaderboard,
+  :root[data-theme="ashen"] .expedition-launch,
+  :root[data-theme="ashen"] .combat-controls,
+  :root[data-theme="ashen"] .combat-message {
+    box-shadow: inset 0 0 0 1px rgba(7, 7, 6, .8), 0 6px 14px rgba(0, 0, 0, .3);
+  }
+
+  :root[data-theme="ashen"] .section-cap { min-height: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="ashen"] .destination:hover,
+  :root[data-theme="ashen"] .action-card:hover,
+  :root[data-theme="ashen"] .quest-card:hover,
+  :root[data-theme="ashen"] .perk-choice-grid button:hover {
+    transform: none;
+  }
+}
