@@ -1,0 +1,212 @@
+/* v11 layout: conservative overflow guards and targeted repairs */
+:root[data-theme="ashen"] *,
+:root[data-theme="ashen"] *::before,
+:root[data-theme="ashen"] *::after { box-sizing: border-box; }
+
+:root[data-theme="ashen"] .hero-card,
+:root[data-theme="ashen"] .paper-doll,
+:root[data-theme="ashen"] .log-panel,
+:root[data-theme="ashen"] .synergy-panel,
+:root[data-theme="ashen"] .memory-panel,
+:root[data-theme="ashen"] .combat-controls,
+:root[data-theme="ashen"] .combat-message,
+:root[data-theme="ashen"] .item-detail,
+:root[data-theme="ashen"] .item-compare,
+:root[data-theme="ashen"] .expedition-launch,
+:root[data-theme="ashen"] .inventory-modal,
+:root[data-theme="ashen"] .perk-modal {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+:root[data-theme="ashen"] .hero-identity,
+:root[data-theme="ashen"] .hero-summary,
+:root[data-theme="ashen"] .destination,
+:root[data-theme="ashen"] .action-card,
+:root[data-theme="ashen"] .quest-card,
+:root[data-theme="ashen"] .shop-item,
+:root[data-theme="ashen"] .item-detail,
+:root[data-theme="ashen"] .item-compare,
+:root[data-theme="ashen"] .log-list,
+:root[data-theme="ashen"] .memory-list,
+:root[data-theme="ashen"] .synergy-list,
+:root[data-theme="ashen"] .expedition-launch,
+:root[data-theme="ashen"] .stats-grid,
+:root[data-theme="ashen"] .paper-doll,
+:root[data-theme="ashen"] .inventory-tools,
+:root[data-theme="ashen"] .inventory-modal {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* right sidebar */
+:root[data-theme="ashen"] .synergy-panel,
+:root[data-theme="ashen"] .memory-panel,
+:root[data-theme="ashen"] .log-panel,
+:root[data-theme="ashen"] .log-list {
+  min-width: 0;
+  overflow: hidden;
+}
+
+:root[data-theme="ashen"] .synergy-list > span,
+:root[data-theme="ashen"] .memory-list > span,
+:root[data-theme="ashen"] .mutation-row > span,
+:root[data-theme="ashen"] .log-list > p,
+:root[data-theme="ashen"] .inventory-hint,
+:root[data-theme="ashen"] .slot-filter-label {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 16px 12px 18px;
+  margin: 0 0 8px;
+}
+
+:root[data-theme="ashen"] .synergy-list > span > b,
+:root[data-theme="ashen"] .memory-list > span > b {
+  display:block;
+  margin: 0 0 4px;
+}
+
+/* paper doll / gear */
+:root[data-theme="ashen"] .paper-doll { padding-top: 10px; padding-bottom: 10px; }
+
+:root[data-theme="ashen"] .paper-doll .gear-slot,
+:root[data-theme="ashen"] .gear-slot {
+  min-width: 46px;
+  min-height: 62px;
+  padding: 4px 4px 5px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:space-between;
+  text-align:center;
+}
+
+:root[data-theme="ashen"] .paper-doll .gear-slot img,
+:root[data-theme="ashen"] .gear-slot img {
+  max-width:100%;
+  max-height:28px;
+  object-fit:contain;
+}
+
+:root[data-theme="ashen"] .paper-doll .gear-slot small,
+:root[data-theme="ashen"] .paper-doll .gear-slot span,
+:root[data-theme="ashen"] .gear-slot small,
+:root[data-theme="ashen"] .gear-slot span {
+  display:block;
+  width:100%;
+  min-width:0;
+  font-size:9px;
+  line-height:1.02;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+:root[data-theme="ashen"] .inventory-item,
+:root[data-theme="ashen"] .inventory-empty,
+:root[data-theme="ashen"] .consumable-slots > button,
+:root[data-theme="ashen"] .consumable-empty {
+  min-width:0;
+  padding:4px;
+}
+
+/* expedition / vow screen */
+:root[data-theme="ashen"] .expedition-launch {
+  padding: 18px 22px 22px !important;
+}
+
+:root[data-theme="ashen"] .expedition-launch > *,
+:root[data-theme="ashen"] .expedition-launch section,
+:root[data-theme="ashen"] .expedition-launch article,
+:root[data-theme="ashen"] .expedition-launch div {
+  min-width:0;
+}
+
+:root[data-theme="ashen"] .expedition-launch .heading-icon,
+:root[data-theme="ashen"] .expedition-launch .level-medallion,
+:root[data-theme="ashen"] .expedition-launch .route-icon,
+:root[data-theme="ashen"] .expedition-launch .card-icon {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  flex: 0 0 48px;
+  margin: 2px 12px 0 0 !important;
+  align-self: start;
+}
+
+:root[data-theme="ashen"] .expedition-launch .destination,
+:root[data-theme="ashen"] .expedition-launch .action-card,
+:root[data-theme="ashen"] .expedition-launch .quest-card,
+:root[data-theme="ashen"] .expedition-launch .shop-item,
+:root[data-theme="ashen"] .expedition-launch .inventory-item,
+:root[data-theme="ashen"] .expedition-launch .vow-card,
+:root[data-theme="ashen"] .expedition-launch .curse-card,
+:root[data-theme="ashen"] .expedition-launch .difficulty-card,
+:root[data-theme="ashen"] .expedition-launch .run-modifier,
+:root[data-theme="ashen"] .expedition-launch .choice-card {
+  min-width: 0;
+  padding: 12px 14px !important;
+}
+
+:root[data-theme="ashen"] .expedition-launch .destination strong,
+:root[data-theme="ashen"] .expedition-launch .action-card h3,
+:root[data-theme="ashen"] .expedition-launch .quest-card h3,
+:root[data-theme="ashen"] .expedition-launch .shop-item h3,
+:root[data-theme="ashen"] .expedition-launch .vow-card h3,
+:root[data-theme="ashen"] .expedition-launch .curse-card h3,
+:root[data-theme="ashen"] .expedition-launch .difficulty-card h3,
+:root[data-theme="ashen"] .expedition-launch .choice-card h3 {
+  font-size: 13px !important;
+}
+
+:root[data-theme="ashen"] .expedition-launch .seed-badge,
+:root[data-theme="ashen"] .expedition-launch .seed-card,
+:root[data-theme="ashen"] .expedition-launch .seed-box,
+:root[data-theme="ashen"] .expedition-launch .daily-seed,
+:root[data-theme="ashen"] .expedition-launch .run-seed,
+:root[data-theme="ashen"] .expedition-launch .local-seed {
+  position: static !important;
+  display: block !important;
+  width: clamp(132px, 18vw, 170px) !important;
+  max-width: 100% !important;
+  min-height: 84px !important;
+  padding: 10px 12px !important;
+  margin-top: 10px !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+:root[data-theme="ashen"] .expedition-launch input[type="range"] {
+  width:100%;
+  min-width:0;
+}
+
+:root[data-theme="ashen"] .expedition-launch .primary-button,
+:root[data-theme="ashen"] .expedition-launch .secondary-button,
+:root[data-theme="ashen"] .expedition-launch .fight-button {
+  min-width: 160px;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  :root[data-theme="ashen"] .section-cap {
+    min-height: 36px;
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 10px;
+  }
+
+  :root[data-theme="ashen"] .paper-doll .gear-slot,
+  :root[data-theme="ashen"] .gear-slot {
+    min-width: 42px;
+    min-height: 58px;
+  }
+
+  :root[data-theme="ashen"] .expedition-launch {
+    padding: 14px 16px 18px !important;
+  }
+}
