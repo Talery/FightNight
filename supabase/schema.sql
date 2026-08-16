@@ -20,11 +20,13 @@ alter table public.leaderboard enable row level security;
 drop policy if exists "leaderboard is public to read" on public.leaderboard;
 create policy "leaderboard is public to read"
   on public.leaderboard for select
+  to anon, authenticated
   using (true);
 
 drop policy if exists "anonymous runs may be submitted" on public.leaderboard;
 create policy "anonymous runs may be submitted"
   on public.leaderboard for insert
+  to anon, authenticated
   with check (verification_state = 'unverified');
 
 drop policy if exists "a run may only improve its own score" on public.leaderboard;
@@ -44,7 +46,6 @@ create table if not exists public.daily_runs (
 
 alter table public.daily_runs enable row level security;
 drop policy if exists "daily runs are public to read" on public.daily_runs;
-create policy "daily runs are public to read" on public.daily_runs for select using (true);
 
 -- Verified daily results are written only by the verify-daily Edge Function with
 -- the service role. The browser receives SELECT access and cannot self-verify.
@@ -67,7 +68,9 @@ create table if not exists public.verified_daily_runs (
 alter table public.verified_daily_runs enable row level security;
 drop policy if exists "verified daily runs are public to read" on public.verified_daily_runs;
 create policy "verified daily runs are public to read"
-  on public.verified_daily_runs for select using (true);
+  on public.verified_daily_runs for select
+  to anon, authenticated
+  using (true);
 
 create index if not exists verified_daily_day_score_idx on public.verified_daily_runs (day desc, score desc);
 create index if not exists verified_daily_season_score_idx on public.verified_daily_runs (season_id, score desc);
@@ -83,8 +86,8 @@ alter table public.daily_rate_limits enable row level security;
 create or replace function public.claim_daily_verification_slot(p_player_id text, p_limit integer default 8)
 returns boolean
 language plpgsql
-security definer
-set search_path = public
+security invoker
+set search_path = ''
 as $$
 declare
   bucket timestamptz := date_trunc('hour', now());
@@ -102,13 +105,34 @@ $$;
 revoke all on function public.claim_daily_verification_slot(text, integer) from public, anon, authenticated;
 grant execute on function public.claim_daily_verification_slot(text, integer) to service_role;
 
-create or replace view public.current_daily_leaderboard as
+create or replace view public.current_daily_leaderboard
+with (security_invoker = true) as
 select player_id, day, score, outcome, action_count, ruleset_version, verified_at,
        dense_rank() over (partition by day, ruleset_version order by score desc) as rank
 from public.verified_daily_runs;
 
-create or replace view public.season_leaderboard as
+create or replace view public.season_leaderboard
+with (security_invoker = true) as
 select player_id, season_id, sum(score)::bigint as score, count(*)::integer as verified_runs,
        dense_rank() over (partition by season_id order by sum(score) desc) as rank
 from public.verified_daily_runs
 group by player_id, season_id;
+
+-- New Supabase projects no longer expose public-schema objects to the Data API
+-- automatically. Grant only the operations used by the browser client.
+grant usage on schema public to anon, authenticated;
+
+revoke all on table public.leaderboard from anon, authenticated;
+grant select on table public.leaderboard to anon, authenticated;
+grant insert on table public.leaderboard to anon, authenticated;
+
+revoke all on table public.daily_runs from anon, authenticated;
+revoke all on table public.daily_rate_limits from anon, authenticated;
+
+revoke all on table public.verified_daily_runs from anon, authenticated;
+grant select on table public.verified_daily_runs to anon, authenticated;
+
+revoke all on table public.current_daily_leaderboard from anon, authenticated;
+revoke all on table public.season_leaderboard from anon, authenticated;
+grant select on table public.current_daily_leaderboard to anon, authenticated;
+grant select on table public.season_leaderboard to anon, authenticated;

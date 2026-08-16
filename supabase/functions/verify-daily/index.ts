@@ -1,7 +1,7 @@
 import {
   DAILY_RULESET_VERSION, dailyIdempotencyKey, dailySeedForDay,
   isDailyReplayJournal, isDailySubmission, replayDailyJournal, sha256Hex, type DailyReplayJournal, type DailySubmission,
-} from '../../../src/game/daily-protocol.ts'
+} from './_shared/daily-protocol.js'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
