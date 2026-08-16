@@ -5,6 +5,7 @@
     { "directory": "biomes", "source": "FightNight / OpenAI image generation", "license": "Project original" },
     { "directory": "bosses", "source": "FightNight / OpenAI image generation", "license": "Project original" },
     { "directory": "events", "source": "FightNight / OpenAI image generation", "license": "Project original" },
+    { "directory": "fonts", "source": "Cormorant Project Authors / CatharsisFonts", "license": "SIL-OFL-1.1" },
     { "directory": "relics", "source": "FightNight / OpenAI image generation", "license": "Project original" },
     { "directory": "dark-fighters", "source": "FightNight / OpenAI image generation", "license": "Project original" },
     { "directory": "items-v2", "source": "FightNight / OpenAI image generation", "license": "Project original" },

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Backpack, History, X } from 'lucide-react'
+import { Backpack, CircleHelp, History, X } from 'lucide-react'
 import { statSummary } from '../../game/engine'
 import { contentRegistry } from '../../game/registry'
 import type { EquipSlot, GameState, Item } from '../../game/types'
@@ -7,7 +7,7 @@ import { rarityHints, rarityLabels } from '../../ui/text'
 import type { GameDispatch } from '../../ui/types'
 import { Tooltip } from '../Tooltip'
 import { ItemArt, itemPresentationClasses, itemPresentationLabel } from './ItemArt'
-import { buildSynergies, itemRuleDescriptions } from '../../game/build-identity'
+import { buildSynergies, itemRuleDescriptions, synergyDescriptions } from '../../game/build-identity'
 import { recurringNpcs, worldMemoryJournal } from '../../game/world-memory'
 
 const { perks, slotNames } = contentRegistry
@@ -28,7 +28,12 @@ function MemoryPanel({ state }: { state: GameState }) {
 function SynergyPanel({ state }: { state: GameState }) {
   if (!state.hero) return null
   const synergies = buildSynergies(state.hero, state.expedition)
-  return <section className="panel-block synergy-panel" aria-label="Синергии билда"><div className="section-cap"><span>Почерк бойца</span><b>{synergies.filter((entry) => entry.state === 'active').length} акт.</b></div>{synergies.length ? <div className="synergy-list">{synergies.map((entry) => <Tooltip key={entry.tag} text={entry.state === 'active' ? 'Активная специализация: собрано не менее трёх источников.' : entry.state === 'near' ? 'Почти активна: нужен ещё один источник.' : 'Первый источник синергии.'}><span tabIndex={0} className={entry.state}><b>{entry.name}</b><i>{entry.count}/3</i><small>{entry.state === 'active' ? 'АКТИВНА' : entry.state === 'near' ? 'ЕЩЁ ОДИН' : 'НАЧАЛО'}</small></span></Tooltip>)}</div> : <p className="empty-copy">Надень предмет или выбери клятву, чтобы наметить стиль.</p>}</section>
+  const statusHint = (state: 'active' | 'near' | 'seed') => state === 'active'
+    ? 'Стиль сформирован: собрано не менее трёх источников.'
+    : state === 'near'
+      ? 'Почти сформирован: нужен ещё один источник.'
+      : 'Найден первый источник этого стиля.'
+  return <section className="panel-block synergy-panel" aria-label="Боевой стиль"><div className="section-cap"><span>Боевой стиль</span><Tooltip text="Стиль складывается из экипировки, перков и клятвы. При двух источниках подходящая добыча начинает встречаться чаще."><CircleHelp className="section-help" size={15} tabIndex={0} /></Tooltip><b>{synergies.filter((entry) => entry.state === 'active').length} акт.</b></div>{synergies.length ? <div className="synergy-list">{synergies.map((entry) => <Tooltip key={entry.tag} text={`${synergyDescriptions[entry.tag]} ${statusHint(entry.state)} Собрано: ${entry.count} из 3.`}><span tabIndex={0} className={entry.state}><b>{entry.name}</b><i>{entry.count}/3</i><small>{entry.state === 'active' ? 'АКТИВЕН' : entry.state === 'near' ? 'ЕЩЁ ОДИН' : 'НАЧАЛО'}</small></span></Tooltip>)}</div> : <p className="empty-copy">Надень предмет или выбери клятву, чтобы наметить стиль.</p>}</section>
 }
 
 export function InventoryModal({ state, dispatch, slot, onClose, onUseConsumable }: { state: GameState; dispatch: GameDispatch; slot: EquipSlot | null; onClose: () => void; onUseConsumable: (item: Item) => void }) {
@@ -56,7 +61,7 @@ export function InventoryModal({ state, dispatch, slot, onClose, onUseConsumable
     <div className="modal-backdrop inventory-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}>
       <section className="panel-block inventory-modal" role="dialog" aria-modal="true" aria-labelledby="inventory-title">
         <div className="section-cap">
-          <span id="inventory-title">{slot ? `Выбор: ${slotNames[slot]}` : 'Сумка'} <small>{visibleItems.length}/{hero.inventory.length}</small></span>
+          <span id="inventory-title">{slot ? `Арсенал: ${slotNames[slot]}` : 'Арсенал бойца'} <small>{visibleItems.length}/{hero.inventory.length}</small></span>
           <div><Backpack size={17} /><button type="button" className="modal-close" aria-label="Закрыть сумку" onClick={onClose}><X size={18} /></button></div>
         </div>
         <div className="inventory-tools">
@@ -65,7 +70,7 @@ export function InventoryModal({ state, dispatch, slot, onClose, onUseConsumable
         </div>
         <div className="inventory-modal-content">
           <div className="inventory-grid">
-            {visibleItems.map((item) => <Tooltip key={item.id} text={`${rarityLabels[item.rarity]}. ${itemPresentationLabel(item) ? `${itemPresentationLabel(item)}. ` : ''}${item.name}. ${statSummary(item) || item.description}`}><button className={`inventory-item ${itemPresentationClasses(item)} ${selectedId === item.id ? 'selected' : ''} ${Object.values(hero.equipment).includes(item.id) ? 'equipped' : ''}`} onClick={() => setSelectedId(item.id)}><b><ItemArt item={item} /></b><span>{item.name}</span></button></Tooltip>)}
+            {visibleItems.map((item) => <Tooltip key={item.id} text={`${rarityLabels[item.rarity]}. ${itemPresentationLabel(item) ? `${itemPresentationLabel(item)}. ` : ''}${item.name}. ${statSummary(item) || item.description}`}><button className={`inventory-item ${itemPresentationClasses(item)} ${selectedId === item.id ? 'selected' : ''} ${Object.values(hero.equipment).includes(item.id) ? 'equipped' : ''}`} onClick={() => setSelectedId(item.id)}><b><ItemArt item={item} /></b><span><strong>{item.name}</strong><small>{rarityLabels[item.rarity]}{item.upgradeLevel ? ` · +${item.upgradeLevel}` : ''}</small></span></button></Tooltip>)}
             {Array.from({ length: Math.max(0, 12 - visibleItems.length) }).map((_, index) => <i className="inventory-empty" key={index} />)}
           </div>
           {selected ? <ItemDetails item={selected} state={state} dispatch={dispatch} onRemoved={() => setSelectedId(null)} onUseConsumable={onUseConsumable} /> : <p className="empty-copy inventory-hint">{visibleItems.length ? 'Выбери предмет, чтобы изучить его.' : slot ? `В сумке пока нет предметов для слота «${slotNames[slot].toLowerCase()}».` : 'Сумка пуста.'}</p>}
@@ -82,8 +87,7 @@ function ItemDetails({ item, state, dispatch, onRemoved, onUseConsumable }: { it
   const perk = item.perk ? perks.find((candidate) => candidate.id === item.perk) : null
   return (
     <div className={`item-detail ${itemPresentationClasses(item)}`}>
-      <Tooltip text={rarityHints[item.rarity]}><small tabIndex={0} className={`rarity-text rarity-${item.rarity}`}>{rarityLabels[item.rarity]} {item.type === 'equipment' && item.slot ? `· ${slotNames[item.slot]}` : '· Расходник'}</small></Tooltip>
-      <h4>{item.name}{item.upgradeLevel ? ` +${item.upgradeLevel}` : ''}</h4>
+      <div className="item-detail-hero"><span className="item-detail-art"><ItemArt item={item} /></span><div><Tooltip text={rarityHints[item.rarity]}><small tabIndex={0} className={`rarity-text rarity-${item.rarity}`}>{rarityLabels[item.rarity]} {item.type === 'equipment' && item.slot ? `· ${slotNames[item.slot]}` : '· Расходник'}</small></Tooltip><h4>{item.name}{item.upgradeLevel ? ` +${item.upgradeLevel}` : ''}</h4></div></div>
       {itemPresentationLabel(item) && <p className="item-special-mark">{itemPresentationLabel(item)}</p>}
       {item.ruleModifier && <p className="embedded-perk">Правило: {itemRuleDescriptions[item.ruleModifier]}</p>}
       <b className="item-stats">{statSummary(item) || item.description}</b>

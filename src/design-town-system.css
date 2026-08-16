@@ -1,0 +1,1097 @@
+/*
+ * Town and arsenal presentation layer.
+ * Loaded after the shared nameplate system so locations keep the same metal
+ * language while gaining distinct silhouettes and readable information.
+ */
+
+:root[data-theme="ashen"] {
+  --tavern-accent: #c07a46;
+  --shop-accent: #d0a453;
+  --hall-accent: #9ca8b4;
+  --town-surface: linear-gradient(135deg, rgba(34, 30, 24, .98), rgba(8, 8, 7, .99) 72%);
+}
+
+/* Heroes-like settlement map ----------------------------------------- */
+:root[data-theme="ashen"] .hub-screen {
+  container-type: inline-size;
+  justify-content: flex-start;
+  gap: 22px;
+}
+
+:root[data-theme="ashen"] .village-map {
+  min-height: 650px;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  border: 1px solid rgba(159, 139, 105, .34);
+  background-image:
+    linear-gradient(180deg, rgba(4, 7, 8, .18), rgba(4, 5, 5, .08) 44%, rgba(5, 5, 4, .82)),
+    radial-gradient(circle at 58% 38%, rgba(190, 102, 46, .14), transparent 30%),
+    var(--village-art);
+  background-position: center;
+  background-size: cover;
+  box-shadow: inset 0 0 90px #050504, 0 20px 45px rgba(0,0,0,.42);
+  isolation: isolate;
+}
+
+:root[data-theme="ashen"] .village-map::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5,5,4,.86), transparent 44%),
+    linear-gradient(0deg, rgba(5,5,4,.82), transparent 62%);
+  pointer-events: none;
+}
+
+:root[data-theme="ashen"] .village-map::after {
+  content: "КАРТА УБЕЖИЩА";
+  position: absolute;
+  right: 24px;
+  top: 20px;
+  color: rgba(220, 197, 148, .6);
+  font: 700 10px var(--fight-display);
+  letter-spacing: .22em;
+  text-shadow: 0 2px 3px #000;
+}
+
+:root[data-theme="ashen"] .village-welcome {
+  width: min(480px, 52%);
+  position: absolute;
+  z-index: 3;
+  left: 38px;
+  top: 34px;
+  margin: 0;
+  padding: 20px 24px;
+  border-left: 2px solid var(--gold);
+  background: linear-gradient(90deg, rgba(8,8,7,.88), rgba(8,8,7,.34), transparent);
+  pointer-events: none;
+}
+
+:root[data-theme="ashen"] .village-welcome h1 {
+  margin: 8px 0 10px;
+  font-size: clamp(40px, 4.4vw, 66px);
+}
+
+:root[data-theme="ashen"] .village-welcome > p:last-child {
+  color: #c2b9a8;
+  font-size: 15px;
+}
+
+:root[data-theme="ashen"] .village-building {
+  --building-accent: var(--gold);
+  width: clamp(220px, 28%, 300px);
+  min-height: 148px;
+  position: absolute;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 18px;
+  gap: 12px;
+  align-items: end;
+  padding: 64px 15px 15px;
+  overflow: hidden;
+  color: #eee4d2;
+  text-align: left;
+  border: 1px solid color-mix(in srgb, var(--building-accent) 72%, #37332c);
+  background-image:
+    linear-gradient(180deg, rgba(5,5,4,.02), rgba(5,5,4,.56) 42%, rgba(5,5,4,.96) 76%),
+    var(--building-art);
+  background-position: center;
+  background-size: cover;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.035), 0 14px 28px rgba(0,0,0,.52);
+  cursor: pointer;
+  transition: transform .18s ease, filter .18s ease, border-color .18s ease;
+}
+
+:root[data-theme="ashen"] .village-building::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid color-mix(in srgb, var(--building-accent) 28%, transparent);
+  pointer-events: none;
+}
+
+:root[data-theme="ashen"] .village-building::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--building-accent), transparent);
+  opacity: .78;
+}
+
+:root[data-theme="ashen"] .village-building:hover {
+  z-index: 6;
+  transform: translateY(-5px) scale(1.025);
+  border-color: var(--building-accent);
+  filter: brightness(1.14);
+}
+
+:root[data-theme="ashen"] .village-building > * { position: relative; z-index: 1; }
+:root[data-theme="ashen"] .village-tavern { --building-accent: var(--tavern-accent); left: 4%; bottom: 34px; }
+:root[data-theme="ashen"] .village-shop { --building-accent: var(--shop-accent); left: 35%; bottom: 82px; }
+:root[data-theme="ashen"] .village-hall { --building-accent: var(--hall-accent); right: 4%; top: 156px; }
+
+:root[data-theme="ashen"] .village-gate {
+  --building-accent: #b75a43;
+  right: 4%;
+  bottom: 22px;
+  background-image:
+    linear-gradient(180deg, rgba(5,5,4,.04), rgba(5,5,4,.52) 40%, rgba(5,5,4,.97) 78%),
+    radial-gradient(ellipse at 50% 58%, rgba(174, 68, 34, .72), transparent 10%),
+    linear-gradient(110deg, transparent 30%, #353128 31% 38%, #080807 39% 61%, #353128 62% 69%, transparent 70%),
+    linear-gradient(#181611, #080807);
+}
+
+:root[data-theme="ashen"] .building-emblem {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  color: #f2dcae;
+  border: 1px solid var(--building-accent);
+  background: radial-gradient(circle, color-mix(in srgb, var(--building-accent) 28%, #241e16), #090908 72%);
+  box-shadow: inset 0 0 16px #000, 0 0 16px color-mix(in srgb, var(--building-accent) 18%, transparent);
+  transform: rotate(45deg);
+}
+
+:root[data-theme="ashen"] .building-emblem svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.6;
+  transform: rotate(-45deg);
+}
+
+:root[data-theme="ashen"] .building-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+:root[data-theme="ashen"] .building-copy small {
+  color: var(--building-accent);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .11em;
+}
+
+:root[data-theme="ashen"] .building-copy b {
+  font: 700 21px/1.02 var(--fight-display);
+  overflow-wrap: normal;
+}
+
+:root[data-theme="ashen"] .building-copy i {
+  color: #b3aa9a;
+  font: 600 12px var(--fight-display);
+}
+
+:root[data-theme="ashen"] .village-building > svg {
+  align-self: center;
+  color: var(--building-accent);
+}
+
+:root[data-theme="ashen"] .village-map + .expedition-launch {
+  scroll-margin-top: 92px;
+}
+
+/* A clearly labelled arsenal control replaces the ambiguous tiny bag. */
+:root[data-theme="ashen"] .doll-inventory-button {
+  width: 120px;
+  height: 46px;
+  right: 10px;
+  top: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 14px 0 12px;
+  color: #f0dba9;
+  border: 1px solid #bd9150;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  background-image: linear-gradient(180deg, rgba(70, 53, 29, .98), rgba(15, 14, 11, .99));
+  box-shadow: inset 0 0 0 2px #0b0a08, inset 0 0 0 3px rgba(212, 171, 100, .16), 0 7px 16px rgba(0,0,0,.48);
+}
+
+:root[data-theme="ashen"] .doll-inventory-button > svg { flex: 0 0 auto; stroke-width: 1.7; }
+:root[data-theme="ashen"] .doll-inventory-button:hover:not(:disabled) {
+  background-image: linear-gradient(180deg, rgba(94, 70, 35, .99), rgba(22, 18, 13, .99));
+}
+
+:root[data-theme="ashen"] .doll-inventory-button > span {
+  font: 700 12px var(--fight-display);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+:root[data-theme="ashen"] .doll-inventory-button > b {
+  min-width: 20px;
+  height: 20px;
+  right: -7px;
+  top: -7px;
+  border-radius: 0;
+  font-size: 10px;
+}
+
+@container (max-width: 780px) {
+  :root[data-theme="ashen"] .village-map {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    padding: 210px 18px 22px;
+  }
+  :root[data-theme="ashen"] .village-welcome {
+    width: auto;
+    right: 18px;
+    top: 22px;
+  }
+  :root[data-theme="ashen"] .village-building {
+    width: auto;
+    min-height: 168px;
+    position: relative;
+    inset: auto;
+    padding-top: 72px;
+  }
+}
+
+@container (max-width: 470px) {
+  :root[data-theme="ashen"] .village-map {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 225px 14px 18px;
+  }
+  :root[data-theme="ashen"] .village-welcome { left: 14px; right: 14px; }
+  :root[data-theme="ashen"] .village-welcome h1 { font-size: 39px; }
+  :root[data-theme="ashen"] .village-building { min-height: 146px; }
+}
+
+/* Hub destinations ---------------------------------------------------- */
+:root[data-theme="ashen"] .destination-grid {
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+:root[data-theme="ashen"] .destination {
+  --destination-accent: var(--gold);
+  min-height: 112px;
+  padding: 16px;
+  grid-template-columns: 18px 56px minmax(0, 1fr) 18px;
+  gap: 10px;
+  isolation: isolate;
+  overflow: visible;
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--destination-accent) 11%, transparent), transparent 48%),
+    var(--town-surface);
+  background-size: 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+:root[data-theme="ashen"] .tavern-destination { --destination-accent: var(--tavern-accent); }
+:root[data-theme="ashen"] .shop-destination { --destination-accent: var(--shop-accent); }
+:root[data-theme="ashen"] .hall-destination { --destination-accent: var(--hall-accent); }
+
+:root[data-theme="ashen"] .destination::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 10px;
+  border-left: 2px solid var(--destination-accent);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--destination-accent) 8%, transparent), transparent 46%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 1px, transparent 1px 9px);
+  opacity: .82;
+  pointer-events: none;
+}
+
+:root[data-theme="ashen"] .destination > * {
+  position: relative;
+  z-index: 1;
+}
+
+:root[data-theme="ashen"] .destination-index {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--destination-accent) 72%, #8a8377);
+  border-right: 1px solid color-mix(in srgb, var(--destination-accent) 35%, transparent);
+  font: 600 12px/1 var(--fight-display);
+  font-style: normal;
+  letter-spacing: .08em;
+}
+
+:root[data-theme="ashen"] .destination > .destination-sigil {
+  width: 54px;
+  height: 54px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  color: #f0d9a7;
+  border: 1px solid color-mix(in srgb, var(--destination-accent) 70%, #2d2922);
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--destination-accent) 28%, #211b14) 0 36%, #0d0d0b 38% 58%, transparent 60%),
+    conic-gradient(from 45deg, transparent 0 12%, color-mix(in srgb, var(--destination-accent) 45%, #34302a) 13% 15%, transparent 16% 37%, color-mix(in srgb, var(--destination-accent) 45%, #34302a) 38% 40%, transparent 41% 62%, color-mix(in srgb, var(--destination-accent) 45%, #34302a) 63% 65%, transparent 66% 87%, color-mix(in srgb, var(--destination-accent) 45%, #34302a) 88% 90%, transparent 91%);
+  box-shadow: inset 0 0 18px #000, 0 0 18px color-mix(in srgb, var(--destination-accent) 12%, transparent);
+  transform: rotate(45deg);
+}
+
+:root[data-theme="ashen"] .destination > .destination-sigil svg {
+  width: 27px;
+  height: 27px;
+  stroke-width: 1.55;
+  transform: rotate(-45deg);
+  filter: drop-shadow(0 2px 3px #000);
+}
+
+:root[data-theme="ashen"] .destination small {
+  color: var(--destination-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+:root[data-theme="ashen"] .destination b {
+  margin: 5px 0 4px;
+  color: #f1e8d6;
+  font-size: 18px;
+  line-height: 1.05;
+}
+
+:root[data-theme="ashen"] .destination p {
+  color: #afa797;
+  font-size: 13px;
+  letter-spacing: .035em;
+}
+
+:root[data-theme="ashen"] .destination > svg {
+  width: 20px;
+  color: var(--destination-accent);
+  transition: transform .18s ease;
+}
+
+:root[data-theme="ashen"] .destination:hover > svg { transform: translateX(4px); }
+:root[data-theme="ashen"] .destination:hover {
+  transform: translateY(-3px);
+  background-image:
+    linear-gradient(90deg, color-mix(in srgb, var(--destination-accent) 16%, transparent), transparent 52%),
+    linear-gradient(145deg, rgba(49, 41, 30, .99), rgba(9, 9, 8, .99));
+}
+
+/* Location identity --------------------------------------------------- */
+:root[data-theme="ashen"] .location-screen {
+  --location-accent: var(--gold);
+  container-type: inline-size;
+}
+
+:root[data-theme="ashen"] .tavern-screen { --location-accent: var(--tavern-accent); }
+:root[data-theme="ashen"] .shop-screen { --location-accent: var(--shop-accent); }
+:root[data-theme="ashen"] .hall-screen { --location-accent: var(--hall-accent); }
+
+:root[data-theme="ashen"] .screen-heading {
+  min-height: 150px;
+  grid-template-columns: 48px 78px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  margin: -4px 0 32px;
+  padding: 18px 22px;
+  border-left: 3px solid var(--location-accent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--location-accent) 12%, #0b0b09), rgba(10,10,9,.84) 54%, transparent);
+}
+
+:root[data-theme="ashen"] .screen-heading .heading-icon {
+  width: 70px;
+  height: 70px;
+  color: #f2ddb0;
+  border-color: var(--location-accent);
+  background: radial-gradient(circle, color-mix(in srgb, var(--location-accent) 28%, #201c16), #0d0d0b 68%);
+  box-shadow: inset 0 0 20px #000, 0 0 22px color-mix(in srgb, var(--location-accent) 15%, transparent);
+  transform: rotate(45deg);
+}
+
+:root[data-theme="ashen"] .screen-heading .heading-icon svg {
+  width: 30px;
+  height: 30px;
+  transform: rotate(-45deg);
+}
+
+:root[data-theme="ashen"] .screen-heading small {
+  color: var(--location-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+:root[data-theme="ashen"] .screen-heading h1 {
+  margin: 5px 0 7px;
+  color: #f2eadc;
+  font-size: clamp(38px, 4vw, 58px);
+}
+
+:root[data-theme="ashen"] .screen-heading p {
+  max-width: 720px;
+  color: #b9b1a2;
+  font-size: 15px;
+}
+
+:root[data-theme="ashen"] .location-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+:root[data-theme="ashen"] :is(.action-card, .quest-card) {
+  min-height: 250px;
+  padding: 26px 28px 24px 108px;
+  overflow: visible;
+  background-image:
+    linear-gradient(110deg, color-mix(in srgb, var(--location-accent) 8%, transparent), transparent 38%),
+    var(--town-surface);
+  background-size: 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+:root[data-theme="ashen"] :is(.action-card, .quest-card) .card-icon {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  left: 28px;
+  top: 30px;
+  color: var(--location-accent);
+  border: 1px solid color-mix(in srgb, var(--location-accent) 62%, #302a22);
+  background: radial-gradient(circle, color-mix(in srgb, var(--location-accent) 18%, #181511), #090908 72%);
+  box-shadow: inset 0 0 15px #000;
+  transform: rotate(45deg);
+}
+
+:root[data-theme="ashen"] :is(.action-card, .quest-card) .card-icon svg {
+  width: 26px;
+  height: 26px;
+  transform: rotate(-45deg);
+}
+
+:root[data-theme="ashen"] :is(.action-card, .quest-card) > small {
+  color: var(--location-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+:root[data-theme="ashen"] :is(.action-card, .quest-card) h3 {
+  margin: 7px 0 11px;
+  font-size: 27px;
+}
+
+:root[data-theme="ashen"] :is(.action-card, .quest-card) p {
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+:root[data-theme="ashen"] :is(.action-card, .quest-card) > b { font-size: 14px; }
+
+/* Shop --------------------------------------------------------------- */
+:root[data-theme="ashen"] .forge-materials {
+  min-height: 82px;
+  padding: 14px 18px;
+  border-color: transparent;
+  background: linear-gradient(90deg, rgba(77, 55, 27, .78), rgba(15, 14, 12, .95));
+}
+
+:root[data-theme="ashen"] .forge-materials > div small { font-size: 11px; }
+:root[data-theme="ashen"] .forge-materials > div b { font-size: 13px; }
+:root[data-theme="ashen"] .forge-materials dt { font-size: 10px; }
+:root[data-theme="ashen"] .forge-materials dd { font-size: 24px; }
+
+:root[data-theme="ashen"] .shop-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+:root[data-theme="ashen"] .shop-item {
+  min-height: 154px;
+  grid-template-columns: 88px minmax(0, 1fr) 96px;
+  grid-template-rows: minmax(88px, 1fr) 36px;
+  gap: 9px 16px;
+  padding: 18px;
+  overflow: visible;
+  background-image:
+    linear-gradient(110deg, color-mix(in srgb, var(--rarity) 10%, transparent), transparent 42%),
+    var(--town-surface);
+  background-size: 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+:root[data-theme="ashen"] .shop-icon {
+  width: 88px;
+  height: 88px;
+  grid-row: 1 / 3;
+  border: 1px solid color-mix(in srgb, var(--rarity) 68%, #2c2923);
+  background:
+    radial-gradient(circle at 50% 43%, color-mix(in srgb, var(--rarity) 14%, #242019), #090908 70%);
+  box-shadow: inset 0 0 24px #000, 0 0 18px color-mix(in srgb, var(--rarity) 12%, transparent);
+}
+
+:root[data-theme="ashen"] .shop-icon .item-art { width: 68px; height: 68px; }
+:root[data-theme="ashen"] .shop-info small { font-size: 10px; }
+:root[data-theme="ashen"] .shop-info h3 { margin: 5px 0; font-size: 21px; }
+:root[data-theme="ashen"] .shop-info p { font-size: 13px; line-height: 1.35; }
+:root[data-theme="ashen"] .shop-info span { font-size: 12px; }
+
+:root[data-theme="ashen"] .shop-item > .shop-buy {
+  height: 76px;
+  align-self: center;
+}
+
+:root[data-theme="ashen"] .shop-item > .shop-buy b { font-size: 25px; }
+:root[data-theme="ashen"] .shop-item > .shop-buy small { color: var(--shop-accent); font-size: 9px; letter-spacing: .12em; }
+:root[data-theme="ashen"] .shop-item > .shop-haggle {
+  grid-column: 2 / 4;
+  height: 36px;
+  color: #c8b995;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+/* Hall --------------------------------------------------------------- */
+:root[data-theme="ashen"] .leaderboard {
+  padding: 10px;
+  background-image: linear-gradient(115deg, rgba(137,151,164,.08), transparent 42%), var(--town-surface);
+  background-size: 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+:root[data-theme="ashen"] .leaderboard-head,
+:root[data-theme="ashen"] .leader-row {
+  grid-template-columns: minmax(260px, 1fr) 92px 92px 132px;
+}
+
+:root[data-theme="ashen"] .leaderboard-head {
+  min-height: 46px;
+  padding-left: 72px;
+  color: var(--hall-accent);
+  font-size: 11px;
+}
+
+:root[data-theme="ashen"] .leader-row {
+  min-height: 76px;
+  padding-left: 72px;
+  background: rgba(255,255,255,.015);
+}
+
+:root[data-theme="ashen"] .leader-row .rank {
+  left: 14px;
+  width: 42px;
+  height: 42px;
+  color: #e0e4e7;
+  border-color: #69737c;
+  font-size: 20px;
+}
+:root[data-theme="ashen"] .leader-row div strong { font-size: 19px; }
+:root[data-theme="ashen"] .leader-row div small { font-size: 12px; }
+:root[data-theme="ashen"] .leader-row > span { font-size: 15px; }
+:root[data-theme="ashen"] .leader-row > b:last-child { font-size: 22px; }
+
+/* Arsenal ------------------------------------------------------------ */
+:root[data-theme="ashen"] .inventory-backdrop {
+  background: radial-gradient(circle at 50% 42%, rgba(102, 78, 42, .18), transparent 32%), rgba(0,0,0,.86);
+  backdrop-filter: blur(5px);
+}
+
+:root[data-theme="ashen"] .inventory-modal {
+  width: min(1180px, 100%);
+  max-height: calc(100vh - 44px);
+}
+
+:root[data-theme="ashen"] .inventory-modal > .section-cap {
+  min-height: 68px;
+  padding-inline: 26px 20px;
+  font-size: 22px;
+}
+
+:root[data-theme="ashen"] .inventory-modal > .section-cap small {
+  margin-left: 8px;
+  color: var(--gold);
+  font-size: 13px;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-tools {
+  min-height: 66px;
+  gap: 12px;
+  padding: 13px 20px;
+  background: linear-gradient(90deg, rgba(58,46,28,.34), rgba(10,10,9,.9));
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-tools select {
+  flex-basis: 240px;
+  min-height: 42px;
+  padding: 7px 12px;
+  color: #e9dcc2;
+  font-size: 14px;
+}
+
+:root[data-theme="ashen"] .inventory-modal-content {
+  grid-template-columns: minmax(0, 1fr) 390px;
+  background: #090908;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-grid {
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 20px;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-item,
+:root[data-theme="ashen"] .inventory-modal .inventory-empty {
+  height: 116px;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-item {
+  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-rows: 1fr;
+  gap: 10px;
+  padding: 12px;
+  text-align: left;
+  overflow: visible;
+  border-left: 6px solid var(--rarity);
+  background-image:
+    radial-gradient(circle at 38px 50%, color-mix(in srgb, var(--rarity) 15%, transparent), transparent 34%),
+    linear-gradient(145deg, rgba(37,33,27,.98), rgba(9,9,8,.99));
+  background-size: 100% 100%, 100% 100%;
+  background-repeat: no-repeat;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-item b {
+  width: 68px;
+  height: 76px;
+  border: 1px solid color-mix(in srgb, var(--rarity) 52%, #292620);
+  background: rgba(5,5,4,.55);
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-item .item-art {
+  width: 62px;
+  height: 62px;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-item > span {
+  width: auto;
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  overflow: hidden;
+  white-space: normal;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-item > span strong {
+  color: #eee5d4;
+  font: 700 17px/1.05 var(--fight-display);
+  overflow-wrap: anywhere;
+}
+
+:root[data-theme="ashen"] .inventory-modal .inventory-item > span small {
+  color: var(--rarity);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+:root[data-theme="ashen"] .inventory-item.equipped::after {
+  content: "НАДЕТО";
+  width: auto;
+  height: 18px;
+  right: 7px;
+  top: 6px;
+  padding: 0 6px;
+  color: #17130c;
+  font-size: 8px;
+  letter-spacing: .06em;
+}
+
+:root[data-theme="ashen"] .inventory-item.selected {
+  background-image:
+    radial-gradient(circle at 38px 50%, color-mix(in srgb, var(--rarity) 24%, transparent), transparent 36%),
+    linear-gradient(145deg, rgba(64,51,32,.99), rgba(12,11,9,.99));
+  background-size: 100% 100%, 100% 100%;
+  filter: brightness(1.12) var(--nameplate-shadow-soft);
+}
+
+:root[data-theme="ashen"] .hero-identity h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:root[data-theme="ashen"] .hero-name-mark {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  color: #d9b66f;
+  border: 1px solid #8d6c3e;
+  background: linear-gradient(145deg, #322719, #0d0c0a);
+  transform: rotate(45deg);
+  box-shadow: inset 0 0 0 2px #0a0908;
+}
+
+:root[data-theme="ashen"] .hero-name-mark svg {
+  width: 14px;
+  height: 14px;
+  transform: rotate(-45deg);
+}
+
+:root[data-theme="ashen"] .inventory-modal .item-detail,
+:root[data-theme="ashen"] .inventory-modal .inventory-hint {
+  padding: 26px;
+  border-left-color: rgba(150,128,88,.35);
+  background:
+    radial-gradient(circle at 50% 12%, color-mix(in srgb, var(--rarity, #a88c59) 12%, transparent), transparent 28%),
+    linear-gradient(180deg, #16140f, #090908);
+}
+
+:root[data-theme="ashen"] .item-detail-hero {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid color-mix(in srgb, var(--rarity) 38%, #2b2924);
+}
+
+:root[data-theme="ashen"] .item-detail-art {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rarity);
+  background: radial-gradient(circle, color-mix(in srgb, var(--rarity) 17%, #201c16), #080807 72%);
+  box-shadow: inset 0 0 24px #000, 0 0 20px color-mix(in srgb, var(--rarity) 13%, transparent);
+  transform: rotate(45deg);
+}
+
+:root[data-theme="ashen"] .item-detail-art .item-art {
+  width: 82px;
+  height: 82px;
+  transform: rotate(-45deg);
+}
+
+:root[data-theme="ashen"] .inventory-modal .item-detail h4 {
+  margin-top: 7px;
+  font-size: 28px;
+  line-height: 1;
+}
+
+:root[data-theme="ashen"] .inventory-modal .item-detail small { font-size: 11px; }
+:root[data-theme="ashen"] .inventory-modal .item-detail p,
+:root[data-theme="ashen"] .inventory-modal .item-stats {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+:root[data-theme="ashen"] .inventory-modal .item-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+:root[data-theme="ashen"] .inventory-modal .item-actions button {
+  min-height: 46px;
+  font-size: 13px;
+}
+
+@media (min-width: 1600px) {
+  :root[data-theme="ashen"] .inventory-modal { width: min(1480px, 100%); }
+  :root[data-theme="ashen"] .inventory-modal-content { grid-template-columns: minmax(0, 1fr) 430px; }
+  :root[data-theme="ashen"] .inventory-modal .inventory-grid { grid-template-columns: repeat(4, minmax(165px, 1fr)); }
+}
+
+@media (max-width: 1080px) {
+  :root[data-theme="ashen"] .destination {
+    grid-template-columns: 58px minmax(0, 1fr) 18px;
+    padding-inline: 16px;
+  }
+  :root[data-theme="ashen"] .destination-index { display: none; }
+  :root[data-theme="ashen"] .destination > .destination-sigil { width: 54px; height: 54px; }
+  :root[data-theme="ashen"] .destination b { font-size: 17px; }
+  :root[data-theme="ashen"] .shop-list { grid-template-columns: minmax(0, 1fr); }
+  :root[data-theme="ashen"] .inventory-modal .inventory-grid { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
+}
+
+@media (max-width: 800px) {
+  :root[data-theme="ashen"] .destination-grid { grid-template-columns: 1fr; }
+  :root[data-theme="ashen"] .destination { min-height: 96px; }
+  :root[data-theme="ashen"] .destination b { font-size: 20px; }
+  :root[data-theme="ashen"] .screen-heading {
+    min-height: 122px;
+    grid-template-columns: 38px 56px minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px;
+  }
+  :root[data-theme="ashen"] .screen-heading .heading-icon { width: 52px; height: 52px; }
+  :root[data-theme="ashen"] .screen-heading .heading-icon svg { width: 23px; height: 23px; }
+  :root[data-theme="ashen"] .screen-heading h1 { font-size: 34px; }
+  :root[data-theme="ashen"] .screen-heading p { font-size: 13px; }
+  :root[data-theme="ashen"] .location-grid { grid-template-columns: minmax(0, 1fr); }
+  :root[data-theme="ashen"] :is(.action-card, .quest-card) {
+    min-height: 230px;
+    padding: 24px 22px 22px 94px;
+  }
+  :root[data-theme="ashen"] :is(.action-card, .quest-card) .card-icon { left: 22px; width: 52px; height: 52px; }
+  :root[data-theme="ashen"] .inventory-modal-content {
+    grid-template-columns: minmax(0, 1fr);
+    overflow-y: auto;
+  }
+  :root[data-theme="ashen"] .inventory-modal .inventory-grid {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    padding: 14px;
+    overflow: visible;
+  }
+  :root[data-theme="ashen"] .inventory-modal .inventory-item,
+  :root[data-theme="ashen"] .inventory-modal .inventory-empty { height: 104px; }
+  :root[data-theme="ashen"] .inventory-modal .inventory-item {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 7px;
+    padding: 9px;
+  }
+  :root[data-theme="ashen"] .inventory-modal .inventory-item b { width: 54px; height: 64px; }
+  :root[data-theme="ashen"] .inventory-modal .inventory-item .item-art { width: 50px; height: 50px; }
+  :root[data-theme="ashen"] .inventory-modal .inventory-item > span strong { font-size: 15px; }
+  :root[data-theme="ashen"] .inventory-modal .item-detail,
+  :root[data-theme="ashen"] .inventory-modal .inventory-hint { border-left: 0; border-top: 1px solid rgba(150,128,88,.35); }
+}
+
+/* Keep framed compact controls clear of the ornamental border. */
+:root[data-theme="ashen"] :is(
+  .panel-block,
+  .hero-card,
+  .destination,
+  .action-card,
+  .quest-card,
+  .shop-item,
+  .leaderboard,
+  .expedition-launch,
+  .run-header,
+  .combat-controls,
+  .combat-message,
+  .inventory-modal,
+  .perk-modal,
+  .consumable-confirm,
+  .run-debrief,
+  .tutorial-coach
+) > * {
+  position: relative;
+  z-index: 21;
+}
+
+:root[data-theme="ashen"] .perk-strip {
+  min-height: 152px;
+  padding-bottom: 12px;
+}
+
+:root[data-theme="ashen"] .perk-strip > :not(.section-cap) {
+  position: relative;
+  z-index: 21;
+}
+
+:root[data-theme="ashen"] .perk-strip > .empty-copy {
+  min-height: 42px;
+  margin: 0;
+  padding: 14px 14px 6px;
+  line-height: 1.45;
+}
+
+:root[data-theme="ashen"] .perk-strip > .text-button {
+  width: calc(100% - 28px);
+  min-height: 34px;
+  margin: 2px 14px 8px;
+  padding: 6px 10px;
+  line-height: 1.25;
+}
+
+:root[data-theme="ashen"] .combat-controls,
+:root[data-theme="ashen"] .in-combat .combat-controls {
+  min-height: 132px;
+  gap: 10px;
+  align-items: stretch;
+  padding: 18px 20px 20px;
+}
+
+:root[data-theme="ashen"] .combat-controls > * {
+  position: relative;
+  z-index: 21;
+}
+
+:root[data-theme="ashen"] .choice-group {
+  min-height: 90px;
+  padding: 10px 9px 9px;
+  display: grid;
+  grid-template-rows: auto minmax(44px, 1fr);
+  gap: 7px;
+}
+
+:root[data-theme="ashen"] .choice-group > small {
+  margin: 0;
+  line-height: 1.2;
+}
+
+:root[data-theme="ashen"] .choice-group > div { min-height: 44px; }
+
+:root[data-theme="ashen"] .choice-group button {
+  height: auto;
+  min-height: 44px;
+  padding: 6px 4px;
+  line-height: 1.05;
+}
+
+:root[data-theme="ashen"] .technique-group button i {
+  margin-top: 3px;
+  line-height: 1;
+}
+
+:root[data-theme="ashen"] .fight-button { min-height: 90px; }
+
+@container (max-width: 760px) {
+  :root[data-theme="ashen"] .combat-controls,
+  :root[data-theme="ashen"] .in-combat .combat-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 230px;
+  }
+
+  :root[data-theme="ashen"] .technique-group { grid-column: 1; }
+  :root[data-theme="ashen"] .fight-button { grid-column: 2; }
+}
+
+@container (max-width: 540px) {
+  :root[data-theme="ashen"] .combat-controls,
+  :root[data-theme="ashen"] .in-combat .combat-controls {
+    min-height: 0;
+    padding: 14px 14px 16px;
+  }
+  :root[data-theme="ashen"] .technique-group,
+  :root[data-theme="ashen"] .fight-button { grid-column: 1 / -1; }
+  :root[data-theme="ashen"] .fight-button { min-height: 54px; }
+}
+
+@media (max-width: 520px) {
+  :root[data-theme="ashen"] .mobile-nav {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow-x: hidden;
+  }
+  :root[data-theme="ashen"] .mobile-nav button {
+    min-width: 0;
+    padding-inline: 2px;
+    gap: 3px;
+    font-size: 10px;
+  }
+  :root[data-theme="ashen"] .mobile-nav button svg {
+    width: 14px;
+    flex: 0 0 auto;
+  }
+  :root[data-theme="ashen"] .gear-slot { width: 68px; }
+  :root[data-theme="ashen"] .gear-slot.slot-3 small,
+  :root[data-theme="ashen"] .gear-slot.slot-5 small { font-size: 9px; }
+  :root[data-theme="ashen"] .destination { grid-template-columns: 50px minmax(0, 1fr) 16px; }
+  :root[data-theme="ashen"] .destination > .destination-sigil { width: 46px; height: 46px; }
+  :root[data-theme="ashen"] .destination small { font-size: 9px; }
+  :root[data-theme="ashen"] .destination b { font-size: 18px; }
+  :root[data-theme="ashen"] .destination p { font-size: 11px; }
+  :root[data-theme="ashen"] .screen-heading {
+    grid-template-columns: 34px minmax(0, 1fr);
+    align-items: start;
+  }
+  :root[data-theme="ashen"] .screen-heading .heading-icon { display: none; }
+  :root[data-theme="ashen"] .screen-heading h1 { font-size: 30px; }
+  :root[data-theme="ashen"] :is(.action-card, .quest-card) {
+    padding: 88px 20px 20px;
+  }
+  :root[data-theme="ashen"] :is(.action-card, .quest-card) .card-icon { top: 22px; }
+  :root[data-theme="ashen"] .shop-item {
+    grid-template-columns: 72px minmax(0, 1fr) 76px;
+    padding: 12px;
+    gap: 8px;
+  }
+  :root[data-theme="ashen"] .shop-icon { width: 70px; height: 70px; }
+  :root[data-theme="ashen"] .shop-icon .item-art { width: 56px; height: 56px; }
+  :root[data-theme="ashen"] .shop-info h3 { font-size: 18px; }
+  :root[data-theme="ashen"] .shop-info p { display: none; }
+  :root[data-theme="ashen"] .inventory-modal .inventory-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root[data-theme="ashen"] .inventory-modal .inventory-item { height: 96px; }
+  :root[data-theme="ashen"] .item-detail-hero { grid-template-columns: 82px minmax(0, 1fr); }
+  :root[data-theme="ashen"] .item-detail-art { width: 78px; height: 78px; }
+  :root[data-theme="ashen"] .item-detail-art .item-art { width: 62px; height: 62px; }
+  :root[data-theme="ashen"] .inventory-modal .item-detail h4 { font-size: 23px; }
+}
+
+/* The game center can be narrow even on a wide monitor because both sidebars
+   remain visible. Locations respond to their own width, not the viewport. */
+@container (max-width: 780px) {
+  :root[data-theme="ashen"] .screen-heading {
+    min-height: 128px;
+    grid-template-columns: 38px 58px minmax(0, 1fr);
+    gap: 13px;
+    margin-bottom: 22px;
+    padding: 15px 16px;
+  }
+  :root[data-theme="ashen"] .screen-heading .heading-icon {
+    width: 54px;
+    height: 54px;
+  }
+  :root[data-theme="ashen"] .screen-heading .heading-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  :root[data-theme="ashen"] .screen-heading h1 { font-size: 38px; }
+  :root[data-theme="ashen"] .screen-heading p { font-size: 13px; }
+  :root[data-theme="ashen"] .location-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root[data-theme="ashen"] .shop-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root[data-theme="ashen"] .shop-item {
+    min-height: 150px;
+    grid-template-columns: 88px minmax(0, 1fr) 94px;
+  }
+  :root[data-theme="ashen"] .forge-materials {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  :root[data-theme="ashen"] .forge-materials dl { width: 100%; }
+  :root[data-theme="ashen"] .forge-materials dl div {
+    flex: 1;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+  :root[data-theme="ashen"] .leaderboard { overflow-x: auto; }
+  :root[data-theme="ashen"] .leaderboard-head,
+  :root[data-theme="ashen"] .leader-row { min-width: 650px; }
+  :root[data-theme="ashen"] .run-report-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@container (max-width: 500px) {
+  :root[data-theme="ashen"] .screen-heading {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+  :root[data-theme="ashen"] .screen-heading .heading-icon { display: none; }
+  :root[data-theme="ashen"] .screen-heading h1 { font-size: 31px; }
+  :root[data-theme="ashen"] .shop-item {
+    min-height: 166px;
+    grid-template-columns: 72px minmax(0, 1fr) 74px;
+    padding: 12px;
+    gap: 8px;
+  }
+  :root[data-theme="ashen"] .shop-icon {
+    width: 70px;
+    height: 70px;
+  }
+  :root[data-theme="ashen"] .shop-icon .item-art {
+    width: 56px;
+    height: 56px;
+  }
+  :root[data-theme="ashen"] .shop-info h3 { font-size: 18px; }
+  :root[data-theme="ashen"] .shop-info p { display: none; }
+}

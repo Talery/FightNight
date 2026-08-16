@@ -48,3 +48,11 @@ UI ornaments used in `src/assets/kenney-ui-adventure/` and the game interface.
 - Creator: Kenney (https://kenney.nl)
 - License: CC0 1.0 Universal (public domain); attribution is optional.
 - The project keeps only the three referenced PNG ornaments and `License.txt` from the original pack.
+
+## Cormorant Project Authors — Cormorant
+
+Cormorant Regular, SemiBold and Bold are bundled in `src/assets/fonts/cormorant/` for the ashen interface theme.
+
+- Source: https://github.com/CatharsisFonts/Cormorant
+- Copyright: 2015 the Cormorant Project Authors.
+- License: SIL Open Font License 1.1; the complete `OFL.txt` is stored with the font files.
