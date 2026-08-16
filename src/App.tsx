@@ -120,7 +120,7 @@ function App() {
       <div className={`game-grid view-${state.view}`}>
         <HeroSidebar hero={state.hero} dispatch={dispatch} inCombat={Boolean(state.expedition?.combat)} onOpenInventory={(slot) => setInventorySlot(slot ?? 'all')} onUseConsumable={setPendingConsumable} />
         <main className="main-stage">
-          <MobileNav view={state.view} onNavigate={navigate} onHall={() => void openHall()} />
+          <MobileNav view={state.view} onNavigate={navigate} onHall={() => void openHall()} onInventory={() => setInventorySlot('all')} />
           <Suspense fallback={<LoadingScreen />}>
             {(['hub', 'tavern', 'shop', 'hall'] as View[]).includes(state.view) && <HomeScreens view={state.view as 'hub' | 'tavern' | 'shop' | 'hall'} state={state} dispatch={dispatch} onHall={openHall} accessibility={accessibility} onAccessibilityChange={setAccessibility} />}
             {state.view === 'talents' && <TalentScreen state={state} dispatch={dispatch} />}

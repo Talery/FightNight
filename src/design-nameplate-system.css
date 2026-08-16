@@ -1,0 +1,553 @@
+@font-face {
+  font-family: "Cormorant";
+  src: url('./assets/fonts/cormorant/Cormorant-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cormorant";
+  src: url('./assets/fonts/cormorant/Cormorant-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cormorant";
+  src: url('./assets/fonts/cormorant/Cormorant-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+/*
+ * Nameplate UI system.
+ *
+ * The combatant plate is the source of truth for the ashen theme: blackened
+ * steel, cold silver corners and one restrained brass accent.  This layer
+ * deliberately sits after the earlier design experiments so the frame is
+ * visible instead of being buried underneath opaque panel backgrounds.
+ */
+
+:root[data-theme="ashen"] {
+  --nameplate-frame: url('./assets/ui/combat-nameplate-frame.png');
+  --panel-frame: url('./assets/ui/talent-branch-frame.png');
+  --nameplate-ink: rgba(8, 8, 7, .97);
+  --nameplate-surface: linear-gradient(145deg, rgba(27, 26, 23, .97), rgba(8, 8, 7, .985) 68%);
+  --nameplate-surface-hot: linear-gradient(145deg, rgba(43, 37, 29, .98), rgba(11, 10, 9, .99) 72%);
+  --nameplate-shadow: drop-shadow(0 9px 12px rgba(0, 0, 0, .48));
+  --nameplate-shadow-soft: drop-shadow(0 4px 6px rgba(0, 0, 0, .38));
+  --fight-display: "Cormorant", Georgia, "Times New Roman", serif;
+  --fight-ui: "Cormorant", Georgia, "Times New Roman", serif;
+  --display: var(--fight-display);
+  font-family: var(--fight-ui);
+  font-kerning: normal;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+:root[data-theme="ashen"] :is(h1, h2, h3, h4, .top-brand strong, .section-cap, .screen-heading, .combatant-tag) {
+  font-family: var(--fight-display);
+  font-weight: 700;
+  letter-spacing: .025em;
+}
+
+:root[data-theme="ashen"] :is(input, select, .eyebrow, small) {
+  font-family: var(--fight-ui);
+}
+
+:root[data-theme="ashen"] button {
+  font-family: var(--fight-display);
+  font-weight: 600;
+  letter-spacing: .025em;
+}
+
+/* Major surfaces ------------------------------------------------------- */
+:root[data-theme="ashen"] :is(
+  .panel-block,
+  .hero-card,
+  .destination,
+  .action-card,
+  .quest-card,
+  .shop-item,
+  .leaderboard,
+  .expedition-launch,
+  .run-header,
+  .combat-controls,
+  .combat-message,
+  .inventory-modal,
+  .perk-modal,
+  .consumable-confirm,
+  .run-debrief,
+  .tutorial-coach
+) {
+  position: relative;
+  border-color: transparent;
+  outline: 0;
+  border-radius: 0;
+  background-color: var(--nameplate-ink);
+  background-image: var(--nameplate-surface), var(--kenney-panel-detail);
+  background-size: auto, 72px 72px;
+  box-shadow: inset 0 0 0 1px rgba(5, 5, 4, .92), inset 0 1px rgba(238, 225, 194, .035), 0 12px 28px rgba(0, 0, 0, .36);
+}
+
+:root[data-theme="ashen"] :is(
+  .panel-block,
+  .hero-card,
+  .destination,
+  .action-card,
+  .quest-card,
+  .shop-item,
+  .leaderboard,
+  .expedition-launch,
+  .run-header,
+  .combat-controls,
+  .combat-message,
+  .inventory-modal,
+  .perk-modal,
+  .consumable-confirm,
+  .run-debrief,
+  .tutorial-coach
+)::after {
+  content: "";
+  position: absolute;
+  z-index: 20;
+  inset: -4px;
+  display: block;
+  border: solid transparent;
+  border-width: 18px;
+  border-image-source: var(--panel-frame);
+  border-image-slice: 48 56 48 56;
+  border-image-width: 18px;
+  border-image-outset: 3px;
+  border-image-repeat: stretch;
+  filter: var(--nameplate-shadow);
+  pointer-events: none;
+}
+
+/* Keep interactive card artwork, but place the steel plate above it. */
+:root[data-theme="ashen"] :is(.destination, .action-card, .quest-card, .shop-item):hover {
+  border-color: transparent;
+  background-image: var(--nameplate-surface-hot), var(--kenney-panel-detail);
+  box-shadow: inset 0 0 0 1px #060605, 0 14px 30px rgba(0, 0, 0, .46), 0 0 18px rgba(182, 142, 78, .07);
+}
+
+:root[data-theme="ashen"] :is(.destination, .action-card, .quest-card, .shop-item):hover::after {
+  filter: brightness(1.12) var(--nameplate-shadow);
+}
+
+/* Header plates -------------------------------------------------------- */
+:root[data-theme="ashen"] .section-cap {
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  background-color: #100f0d;
+  background-image: linear-gradient(90deg, rgba(63, 51, 36, .72), rgba(14, 14, 12, .96) 42%, rgba(7, 7, 6, .98));
+  box-shadow: inset 0 -1px rgba(218, 193, 139, .06);
+}
+
+:root[data-theme="ashen"] .section-cap::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: -3px -4px;
+  display: block;
+  width: auto;
+  height: auto;
+  margin: 0;
+  background: none;
+  border: solid transparent;
+  border-width: 13px 16px;
+  border-image-source: var(--panel-frame);
+  border-image-slice: 48 56 48 56;
+  border-image-width: 13px 16px;
+  border-image-outset: 2px;
+  border-image-repeat: stretch;
+  filter: var(--nameplate-shadow-soft);
+  pointer-events: none;
+}
+
+/* Buttons and compact controls ---------------------------------------- */
+:root[data-theme="ashen"] :is(
+  .primary-button,
+  .secondary-button,
+  .fight-button,
+  .choice-group button,
+  .technique-group button,
+  .event-choices button,
+  .path-options button,
+  .combat-utility button,
+  .item-actions button,
+  .shop-item > button,
+  .accessibility-panel button,
+  .tutorial-coach button,
+  .modal-close,
+  .text-button,
+  .icon-button
+) {
+  border: 5px solid transparent;
+  border-image-source: var(--panel-frame);
+  border-image-slice: 48 56 48 56;
+  border-image-width: 5px;
+  border-image-repeat: stretch;
+  border-radius: 0;
+  background-color: #171612;
+  background-image: linear-gradient(180deg, rgba(49, 44, 36, .98), rgba(14, 14, 12, .99));
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: var(--nameplate-shadow-soft);
+  text-shadow: 0 1px 2px #000;
+}
+
+:root[data-theme="ashen"] :is(.primary-button, .fight-button) {
+  color: #f3dfb1;
+  border-image-source: var(--nameplate-frame);
+  border-image-slice: 34 56 34 74;
+  border-image-width: 7px 8px 7px 11px;
+  background-image: var(--nameplate-frame), linear-gradient(180deg, rgba(83, 60, 32, .98), rgba(25, 20, 15, .99));
+  background-position: center, center;
+  background-size: 100% 100%, 100% 100%;
+}
+
+:root[data-theme="ashen"] :is(
+  .primary-button,
+  .secondary-button,
+  .fight-button,
+  .choice-group button,
+  .technique-group button,
+  .event-choices button,
+  .path-options button,
+  .combat-utility button,
+  .item-actions button,
+  .shop-item > button,
+  .tutorial-coach button,
+  .text-button,
+  .icon-button
+):hover:not(:disabled) {
+  background-image: linear-gradient(180deg, rgba(74, 61, 42, .99), rgba(22, 19, 15, .99));
+  filter: brightness(1.14) var(--nameplate-shadow-soft);
+}
+
+:root[data-theme="ashen"] :is(.primary-button, .fight-button):hover:not(:disabled) {
+  background-image: var(--nameplate-frame), linear-gradient(180deg, rgba(96, 72, 38, .99), rgba(27, 21, 15, .99));
+  background-position: center, center;
+  background-size: 100% 100%, 100% 100%;
+}
+
+:root[data-theme="ashen"] :is(
+  .choice-group button.selected,
+  .technique-group button.selected,
+  .path-options button.selected,
+  .accessibility-panel button.selected
+) {
+  color: var(--gold-bright);
+  border-image-source: var(--nameplate-frame);
+  border-image-slice: 34 56 34 74;
+  border-image-width: 6px 7px 6px 10px;
+  background-image: var(--nameplate-frame), linear-gradient(180deg, rgba(96, 72, 38, .99), rgba(28, 22, 15, .99));
+  background-position: center, center;
+  background-size: 100% 100%, 100% 100%;
+  box-shadow: inset 0 0 18px rgba(216, 181, 108, .08);
+  filter: brightness(1.1) var(--nameplate-shadow-soft);
+}
+
+/* Dense data cells use the same steel corners at a quieter intensity. */
+:root[data-theme="ashen"] :is(
+  .gear-slot,
+  .inventory-item,
+  .inventory-empty,
+  .consumable-slots > button,
+  .consumable-empty,
+  .run-node,
+  .perk-choice-grid button,
+  .death-stats span,
+  .stat-cell,
+  .synergy-list > span,
+  .memory-list > span,
+  .mutation-row > span
+) {
+  border: 5px solid transparent;
+  border-image-source: var(--panel-frame);
+  border-image-slice: 48 56 48 56;
+  border-image-width: 5px;
+  border-image-repeat: stretch;
+  border-radius: 0;
+  background-color: rgba(12, 12, 10, .94);
+  background-image: linear-gradient(145deg, rgba(34, 31, 25, .96), rgba(9, 9, 8, .98));
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: var(--nameplate-shadow-soft);
+}
+
+:root[data-theme="ashen"] :is(.gear-slot, .inventory-item, .consumable-slots > button, .perk-choice-grid button):hover {
+  background-image: linear-gradient(145deg, rgba(58, 47, 33, .98), rgba(13, 12, 10, .99));
+  filter: brightness(1.1) var(--nameplate-shadow-soft);
+}
+
+/* The shell itself now follows the same dark steel hierarchy. */
+:root[data-theme="ashen"] .top-bar {
+  border-bottom: 0;
+  background: linear-gradient(180deg, rgba(20, 20, 18, .995), rgba(7, 7, 6, .995));
+  box-shadow: inset 0 -1px rgba(206, 191, 158, .08), 0 8px 22px rgba(0, 0, 0, .38);
+}
+
+:root[data-theme="ashen"] .top-bar::after {
+  content: "";
+  position: absolute;
+  z-index: 10;
+  inset: -5px 0 -7px;
+  border: solid transparent;
+  border-width: 16px 20px;
+  border-image-source: var(--panel-frame);
+  border-image-slice: 48 56 48 56;
+  border-image-width: 16px 20px;
+  border-image-outset: 3px;
+  border-image-repeat: stretch;
+  filter: var(--nameplate-shadow-soft);
+  pointer-events: none;
+}
+
+:root[data-theme="ashen"] .left-sidebar,
+:root[data-theme="ashen"] .right-sidebar {
+  background-color: #090908;
+  background-image: linear-gradient(180deg, rgba(18, 18, 16, .985), rgba(7, 7, 6, .995)), var(--kenney-panel);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, .46);
+}
+
+:root[data-theme="ashen"] .left-sidebar { border-right-color: rgba(113, 101, 91, .52); }
+:root[data-theme="ashen"] .right-sidebar { border-left-color: rgba(113, 101, 91, .52); }
+
+:root[data-theme="ashen"] .top-resources > span,
+:root[data-theme="ashen"] .top-resources .sync-pill,
+:root[data-theme="ashen"] .top-resources .theme-toggle {
+  border: 5px solid transparent;
+  border-image-source: var(--panel-frame);
+  border-image-slice: 48 56 48 56;
+  border-image-width: 5px;
+  border-image-repeat: stretch;
+  background-color: #11100e;
+  background-image: linear-gradient(180deg, rgba(31, 29, 25, .98), rgba(9, 9, 8, .99));
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: var(--nameplate-shadow-soft);
+}
+
+/* Do not disturb the source nameplate; keep it as the sharpest reference. */
+:root[data-theme="ashen"] .combatant-tag {
+  filter: var(--nameplate-shadow);
+}
+
+/* Text-heavy combat surfaces use a calm inset; their frame no longer needs
+   to steal content space for the nameplate's brass spear. */
+:root[data-theme="ashen"] .combat-message,
+:root[data-theme="ashen"] .in-combat .combat-message {
+  padding-left: 18px;
+}
+
+:root[data-theme="ashen"] .combat-controls,
+:root[data-theme="ashen"] .in-combat .combat-controls {
+  padding-left: 14px;
+}
+
+:root[data-theme="ashen"] .tutorial-coach,
+:root[data-theme="ashen"] .in-combat .tutorial-coach {
+  padding: 12px 28px;
+}
+
+:root[data-theme="ashen"] .tutorial-coach b {
+  font-family: var(--fight-display);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .015em;
+}
+
+:root[data-theme="ashen"] :is(
+  .hero-identity h2,
+  .run-header h2,
+  .combatant-tag h3,
+  .screen-heading h1,
+  .node-gate h1,
+  .event-encounter h1,
+  .reward-encounter h1,
+  .complete-encounter h1,
+  .perk-modal h1,
+  .death-screen h1
+) {
+  font-family: var(--fight-display);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+:root[data-theme="ashen"] :is(
+  .meter-label,
+  .stat-cell span,
+  .gear-slot small,
+  .combatant-tag p,
+  .log-list p,
+  .synergy-list small,
+  .memory-list small,
+  .run-header small,
+  .run-gains
+) {
+  font-weight: 600;
+}
+
+/* Readability pass for the compact desktop shell. Cormorant has a lower
+   x-height than the old system sans, so reusing the old pixel sizes made the
+   game look miniaturised even at 100% browser zoom. */
+@media (min-width: 801px) {
+  :root[data-theme="ashen"] .top-brand strong { font-size: 21px; }
+  :root[data-theme="ashen"] .top-brand small,
+  :root[data-theme="ashen"] .top-resources small,
+  :root[data-theme="ashen"] .top-resources .sync-pill { font-size: 12px; }
+  :root[data-theme="ashen"] .top-resources b { font-size: 20px; }
+  :root[data-theme="ashen"] .section-cap { min-height: 48px; font-size: 15px; }
+  :root[data-theme="ashen"] .hero-identity h2 { font-size: 23px; }
+  :root[data-theme="ashen"] .hero-identity p { font-size: 15px; }
+  :root[data-theme="ashen"] .meter-label { font-size: 13px; }
+  :root[data-theme="ashen"] .stat-cell span { font-size: 14px; }
+  :root[data-theme="ashen"] .stat-cell b { font-size: 20px; }
+  :root[data-theme="ashen"] .consumable-strip-label { font-size: 12px; }
+  :root[data-theme="ashen"] .empty-copy { font-size: 14px; }
+  :root[data-theme="ashen"] .synergy-list > span b { font-size: 14px; }
+  :root[data-theme="ashen"] .synergy-list > span i { font-size: 12px; }
+  :root[data-theme="ashen"] .synergy-list > span small { font-size: 10px; }
+  :root[data-theme="ashen"] .log-list p { font-size: 14px; line-height: 1.55; }
+  :root[data-theme="ashen"] .run-header h2 { font-size: 23px; }
+  :root[data-theme="ashen"] .run-header small { font-size: 11px; }
+  :root[data-theme="ashen"] .run-header > span b { font-size: 14px; }
+  :root[data-theme="ashen"] .combatant-tag h3 { font-size: 21px; }
+  :root[data-theme="ashen"] .combatant-tag p { font-size: 14px; }
+  :root[data-theme="ashen"] .tutorial-coach b { font-size: 19px; }
+  :root[data-theme="ashen"] .combat-message p { font-size: 14px; }
+  :root[data-theme="ashen"] .combat-message span { font-size: 13px; }
+  :root[data-theme="ashen"] .choice-group > small { font-size: 12px; }
+  :root[data-theme="ashen"] .choice-group button { min-height: 42px; font-size: 14px; }
+  :root[data-theme="ashen"] .technique-group button i { font-size: 11px; }
+  :root[data-theme="ashen"] .fight-button { font-size: 15px; }
+  :root[data-theme="ashen"] .combat-utility > span,
+  :root[data-theme="ashen"] .combat-utility button { font-size: 13px; }
+}
+
+/* Equipment doll: full, persistent slot labels instead of six cropped hints. */
+:root[data-theme="ashen"] .doll-stage { height: 282px; }
+
+:root[data-theme="ashen"] .gear-slot {
+  width: 66px;
+  height: 56px;
+  padding: 5px 4px 3px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 18px;
+  place-items: center;
+  overflow: visible;
+}
+
+:root[data-theme="ashen"] .gear-slot span {
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  line-height: 1;
+}
+
+:root[data-theme="ashen"] .gear-slot small {
+  position: static;
+  width: 100%;
+  padding-top: 2px;
+  overflow: visible;
+  color: #d4c5a5;
+  border-top: 1px solid rgba(145, 126, 94, .36);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .015em;
+  text-align: center;
+  text-overflow: clip;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px #000;
+}
+
+:root[data-theme="ashen"] .gear-slot.slot-5 small {
+  font-size: 9px;
+}
+
+:root[data-theme="ashen"] .gear-slot .item-art { width: 30px; height: 30px; }
+:root[data-theme="ashen"] .slot-0 { left: 7px; top: 54px; }
+:root[data-theme="ashen"] .slot-1 { right: 7px; top: 54px; }
+:root[data-theme="ashen"] .slot-2 { right: 7px; top: 130px; }
+:root[data-theme="ashen"] .slot-3 { left: 7px; top: 130px; }
+:root[data-theme="ashen"] .slot-4 { right: 7px; top: 206px; }
+:root[data-theme="ashen"] .slot-5 { left: 7px; top: 206px; }
+
+@media (max-width: 800px) {
+  :root[data-theme="ashen"] :is(
+    .panel-block,
+    .hero-card,
+    .destination,
+    .action-card,
+    .quest-card,
+    .shop-item,
+    .leaderboard,
+    .expedition-launch,
+    .run-header,
+    .combat-controls,
+    .combat-message,
+    .inventory-modal,
+    .perk-modal,
+    .consumable-confirm,
+    .run-debrief,
+    .tutorial-coach
+  )::after {
+    inset: 0;
+    filter: var(--nameplate-shadow-soft);
+  }
+
+  :root[data-theme="ashen"] .top-bar::after { inset: 0; }
+  :root[data-theme="ashen"] .section-cap::after { inset: 0; }
+  :root[data-theme="ashen"] .combat-message,
+  :root[data-theme="ashen"] .in-combat .combat-message { padding-left: 12px; }
+  :root[data-theme="ashen"] .combat-controls,
+  :root[data-theme="ashen"] .in-combat .combat-controls { padding-left: 9px; }
+  :root[data-theme="ashen"] .tutorial-coach,
+  :root[data-theme="ashen"] .in-combat .tutorial-coach { padding: 9px 14px; }
+  :root[data-theme="ashen"] .tutorial-coach b { font-size: 14px; }
+  :root[data-theme="ashen"] .doll-stage { height: 274px; }
+  :root[data-theme="ashen"] .gear-slot { width: 64px; height: 54px; }
+  :root[data-theme="ashen"] .gear-slot small { font-size: 10px; }
+  :root[data-theme="ashen"] .slot-0,
+  :root[data-theme="ashen"] .slot-1 { top: 48px; }
+  :root[data-theme="ashen"] .slot-2,
+  :root[data-theme="ashen"] .slot-3 { top: 116px; }
+  :root[data-theme="ashen"] .slot-4,
+  :root[data-theme="ashen"] .slot-5 { top: 184px; }
+
+  /* A full-width nameplate is too dense when squeezed into a three-column
+     combat grid. Keep the same metal palette, but reserve the ornate asset
+     for the selected action and the main fight button. */
+  :root[data-theme="ashen"] :is(
+    .choice-group button:not(.selected),
+    .technique-group button:not(.selected),
+    .combat-utility button,
+    .text-button,
+    .icon-button
+  ) {
+    border: 1px solid #4d4842;
+    background-image: linear-gradient(180deg, rgba(39, 37, 33, .98), rgba(11, 11, 10, .99));
+    box-shadow: inset 0 0 0 1px #080807;
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="ashen"] :is(.destination, .action-card, .quest-card, .shop-item):hover::after,
+  :root[data-theme="ashen"] :is(button, .inventory-item, .gear-slot):hover {
+    filter: var(--nameplate-shadow-soft);
+  }
+}

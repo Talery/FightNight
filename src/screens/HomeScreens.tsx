@@ -26,6 +26,10 @@ function sceneStyle(art: string): CSSProperties {
   return { '--location-art': `url(${art})` } as CSSProperties
 }
 
+function villageStyle(art: string): CSSProperties {
+  return { '--building-art': `url(${art})` } as CSSProperties
+}
+
 function exportHeroCard(entry: LeaderboardEntry): void {
   const payload = { name: entry.name, epithet: entry.epithet, level: entry.level, score: entry.score, victories: entry.victories, cause: entry.cause, epitaph: entry.epitaph, bestItem: entry.bestItem, perks: entry.perks, mutations: entry.mutations }
   const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }))
@@ -48,6 +52,7 @@ function downloadJson(contents: string, filename: string): void {
 export function HubScreen({ state, dispatch, onHall, accessibility, onAccessibilityChange }: { state: GameState; dispatch: GameDispatch; onHall: () => void; accessibility: AccessibilitySettings; onAccessibilityChange: (settings: AccessibilitySettings) => void }) {
   const [difficulty, setDifficulty] = useState(3)
   const [oathId, setOathId] = useState<OathId | null>(null)
+  const expeditionRef = useRef<HTMLElement>(null)
   const hero = state.hero!
   const danger = difficulty <= 3 ? 'Терпимый риск' : difficulty <= 6 ? 'Верная боль' : difficulty <= 8 ? 'Почти самоубийство' : 'Приговор'
   const [dailyConfig, setDailyConfig] = useState(localDailyConfig)
@@ -55,13 +60,14 @@ export function HubScreen({ state, dispatch, onHall, accessibility, onAccessibil
   return (
     <div className="hub-screen screen-pad">
       <div className="hub-art" style={{ backgroundImage: `url(${safehouseArt})` }} />
-      <section className="hub-welcome"><p className="eyebrow">УБЕЖИЩЕ · ДЕНЬ {Math.max(1, hero.victories + 1)}</p><h1>Круг снова<br />требует <em>имя</em></h1><p>Отдохни, проверь сталь и выбери, насколько сильно хочешь разозлить глубины.</p></section>
-      <div className="destination-grid">
-        <button className="destination tavern-destination" onClick={() => dispatch({ type: 'NAVIGATE', view: 'tavern' })}><span><Beer /></span><div><small>ЗАЛАТАТЬ РАНЫ</small><b>Таверна «Сбитый зуб»</b><p>Отдых, слухи и работа</p></div><ChevronRight /></button>
-        <button className="destination shop-destination" onClick={() => dispatch({ type: 'NAVIGATE', view: 'shop' })}><span><ShoppingBag /></span><div><small>ПОТРАТИТЬ ДОБЫЧУ</small><b>Лавка Мирры</b><p>Оружие, броня и смеси</p></div><ChevronRight /></button>
-        <button className="destination hall-destination" onClick={onHall}><span><Trophy /></span><div><small>ПОМЕРИТЬСЯ СЛАВОЙ</small><b>Доска павших</b><p>Лучшие результаты бойцов</p></div><ChevronRight /></button>
+      <div className="village-map" style={{ '--village-art': `url(${safehouseArt})` } as CSSProperties} aria-label="Карта убежища">
+        <section className="hub-welcome village-welcome"><p className="eyebrow">УБЕЖИЩЕ · ДЕНЬ {Math.max(1, hero.victories + 1)}</p><h1>Пепельное<br /><em>убежище</em></h1><p>Выбери здание или открой ворота в следующий поход.</p></section>
+        <button className="village-building village-tavern" style={villageStyle(tavernArt)} onClick={() => dispatch({ type: 'NAVIGATE', view: 'tavern' })}><span className="building-emblem"><Beer /></span><span className="building-copy"><small>ОТДЫХ И ЗАКАЗЫ</small><b>Сбитый зуб</b><i>Таверна</i></span><ChevronRight /></button>
+        <button className="village-building village-shop" style={villageStyle(shopArt)} onClick={() => dispatch({ type: 'NAVIGATE', view: 'shop' })}><span className="building-emblem"><ShoppingBag /></span><span className="building-copy"><small>ТОРГОВЛЯ И КУЗНИЦА</small><b>Лавка Мирры</b><i>Снаряжение</i></span><ChevronRight /></button>
+        <button className="village-building village-hall" style={villageStyle(hallArt)} onClick={onHall}><span className="building-emblem"><Trophy /></span><span className="building-copy"><small>ИМЕНА И РЕКОРДЫ</small><b>Доска павших</b><i>Летопись</i></span><ChevronRight /></button>
+        <button className="village-building village-gate" onClick={() => expeditionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}><span className="building-emblem"><DoorOpen /></span><span className="building-copy"><small>СЛЕДУЮЩИЙ ПОХОД</small><b>Врата глубин</b><i>Выбрать клятву</i></span><ChevronRight /></button>
       </div>
-      <section className="expedition-launch panel-block">
+      <section ref={expeditionRef} className="expedition-launch panel-block">
         <div className="expedition-copy"><span className="route-icon"><Map /></span><div><small>СЛЕДУЮЩИЙ ПОХОД</small><h2>Выбери меру безрассудства</h2><p>Сложность усиливает врагов, опыт, золото, очки и качество добычи.</p></div></div>
         <fieldset className="oath-picker"><legend>Выбери клятву: выгода всегда имеет цену</legend>{oathDefinitions.map((oath) => <button type="button" aria-pressed={oathId === oath.id} className={oathId === oath.id ? 'selected' : ''} onClick={() => setOathId(oath.id)} key={oath.id}><b>{oath.name}</b><span>{oath.promise}</span><small>{oath.price}</small></button>)}</fieldset>
         <div className="difficulty-row"><Tooltip text="Сложность усиливает врагов и одновременно повышает опыт, золото, очки и качество добычи."><div className="difficulty-value" tabIndex={0}><b>{difficulty}</b><span>/ 10</span><small>{danger}</small></div></Tooltip><div className="slider-wrap"><input aria-label="Сложность похода" type="range" min="1" max="10" value={difficulty} onChange={(event) => setDifficulty(Number(event.target.value))} /><div className="slider-ticks">{Array.from({ length: 10 }, (_, index) => <i key={index}>{index + 1}</i>)}</div></div><button disabled={!oathId} className="primary-button" onClick={() => oathId && dispatch({ type: 'START_EXPEDITION', difficulty, oathId })}>Начать поход <DoorOpen size={18} /></button><button className="secondary-button" onClick={() => dispatch({ type: 'START_DAILY_EXPEDITION', seed: dailyConfig.seed, day: dailyConfig.day, rulesetVersion: dailyConfig.rulesetVersion })}>Daily {dailyConfig.day} · {DAILY_RULESET_VERSION} · {dailyConfig.source === 'server' ? 'серверный' : 'локальный'} seed</button></div>
@@ -146,7 +152,7 @@ export function ShopScreen({ state, dispatch }: { state: GameState; dispatch: Ga
     <div className="location-screen screen-pad shop-screen" style={sceneStyle(shopArt)}>
       <ScreenHeading eyebrow="ЛАВКА · ТОВАР ОБНОВЛЯЕТСЯ ПОСЛЕ ПОХОДА" title="Мирра знает цену" description="Не спрашивай, кому раньше принадлежала вещь. И почему на ней ещё тепло." icon={<ShoppingBag />} onBack={() => dispatch({ type: 'NAVIGATE', view: 'hub' })} />
       <section className="forge-materials" aria-label="Материалы кузницы"><div><Hammer size={18} /><span><small>КУЗНИЦА МИРРЫ</small><b>Выбери снаряжение в сумке справа, чтобы улучшить, перековать или разобрать его.</b></span></div><dl><div><dt>Обломки</dt><dd>{state.hero!.materials.scrap}</dd></div><div><dt>Угольки</dt><dd>{state.hero!.materials.ember}</dd></div><div><dt>Эссенции</dt><dd>{state.hero!.materials.essence}</dd></div></dl></section>
-      <div className="shop-list">{state.shop.map((item) => { const price = buyPrice(item.value); const itemPerk = item.perk ? perks.find((perk) => perk.id === item.perk) : null; return <article className={`shop-item ${itemPresentationClasses(item)}`} key={item.id}><div className="shop-icon"><ItemArt item={item} /></div><div className="shop-info"><Tooltip text={rarityHints[item.rarity]}><small tabIndex={0}>{rarityLabels[item.rarity]} {item.slot ? `· ${slotNames[item.slot]}` : '· Расходник'}{itemPresentationLabel(item) ? ` · ${itemPresentationLabel(item)}` : ''}</small></Tooltip><h3>{item.name}</h3><p>{statSummary(item) || item.description}</p>{itemPerk && <Tooltip text={itemPerk.description}><span tabIndex={0}>Дар: {itemPerk.name}</span></Tooltip>}</div><button disabled={state.hero!.gold < price} onClick={() => dispatch({ type: 'BUY', itemId: item.id })}><b>{price}</b><small>золота</small></button><button onClick={() => dispatch({ type: 'HAGGLE_BUY', itemId: item.id })}>Торг</button></article> })}</div>
+      <div className="shop-list">{state.shop.map((item) => { const price = buyPrice(item.value); const itemPerk = item.perk ? perks.find((perk) => perk.id === item.perk) : null; return <article className={`shop-item ${itemPresentationClasses(item)}`} key={item.id}><div className="shop-icon"><ItemArt item={item} /></div><div className="shop-info"><Tooltip text={rarityHints[item.rarity]}><small tabIndex={0}>{rarityLabels[item.rarity]} {item.slot ? `· ${slotNames[item.slot]}` : '· Расходник'}{itemPresentationLabel(item) ? ` · ${itemPresentationLabel(item)}` : ''}</small></Tooltip><h3>{item.name}</h3><p>{statSummary(item) || item.description}</p>{itemPerk && <Tooltip text={itemPerk.description}><span tabIndex={0}>Дар: {itemPerk.name}</span></Tooltip>}</div><button className="shop-buy" disabled={state.hero!.gold < price} onClick={() => dispatch({ type: 'BUY', itemId: item.id })}><b>{price}</b><small>КУПИТЬ</small></button><button className="shop-haggle" onClick={() => dispatch({ type: 'HAGGLE_BUY', itemId: item.id })}>Торг</button></article> })}</div>
       <p className="shop-tip">Чтобы продать трофей, выбери его в сумке справа. <button className="text-button" onClick={() => dispatch({ type: 'REFRESH_SHOP' })}>Новый товар · 4 золота</button></p>
     </div>
   )

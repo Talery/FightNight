@@ -1,4 +1,4 @@
-import { Backpack, FlaskConical, Shield, Sparkles } from 'lucide-react'
+import { Backpack, FlaskConical, Shield, Sparkles, Swords } from 'lucide-react'
 import { attributeName, getActivePerks, getHeroStats, statSummary } from '../../game/engine'
 import { contentRegistry } from '../../game/registry'
 import type { Attribute, EquipSlot, Hero, Item } from '../../game/types'
@@ -19,7 +19,7 @@ export function HeroSidebar({ hero, dispatch, inCombat, onOpenInventory, onUseCo
   return (
     <aside className="left-sidebar">
       <section className="hero-card">
-        <div className="hero-identity"><div className="level-medallion"><span>{hero.level}</span><small>ур.</small></div><div><h2>{hero.name}</h2><p>{hero.epithet}</p></div></div>
+        <div className="hero-identity"><div className="level-medallion"><span>{hero.level}</span><small>ур.</small></div><div><h2><span className="hero-name-mark" aria-hidden="true"><Swords /></span>{hero.name}</h2><p>{hero.epithet}</p></div></div>
         <Meter label="Здоровье" value={`${hero.hp} / ${stats.maxHp}`} percent={hpPercent} kind="health" hint={statHints.health} />
         <Meter label="Опыт" value={`${hero.xp} / ${hero.xpToNext}`} percent={xpPercent} kind="xp" hint={statHints.xp} />
         <div className="stats-grid">
@@ -48,7 +48,7 @@ function PaperDoll({ hero, inCombat, onOpenInventory, onUseConsumable }: { hero:
       <div className="section-cap"><span>Снаряжение</span><Shield size={15} /></div>
       <div className="doll-stage">
         <FighterSilhouette variant={hero.id.length % 6} />
-        <Tooltip text="Открыть сумку"><button type="button" className="doll-inventory-button" aria-label={`Открыть сумку, ${hero.inventory.length} предметов`} onClick={() => onOpenInventory()}><Backpack size={18} /><b>{hero.inventory.length}</b></button></Tooltip>
+        <Tooltip text="Открыть арсенал"><button type="button" className="doll-inventory-button" aria-label={`Открыть арсенал, ${hero.inventory.length} предметов`} onClick={() => onOpenInventory()}><Backpack size={18} /><span>Арсенал</span><b>{hero.inventory.length}</b></button></Tooltip>
         {slots.map((slot, index) => {
           const item = hero.inventory.find((candidate) => candidate.id === hero.equipment[slot])
           return <Tooltip key={slot} text={item ? `${item.name}. ${itemPresentationLabel(item) ? `${itemPresentationLabel(item)}. ` : ''}${statSummary(item) || item.description} Нажмите, чтобы выбрать замену.` : `${slotNames[slot]}: выбрать предмет.`}><button className={`gear-slot slot-${index} ${item ? `filled ${itemPresentationClasses(item)}` : ''}`} onClick={() => onOpenInventory(slot)}><span>{item ? <ItemArt item={item} /> : '+'}</span><small>{slotNames[slot]}</small></button></Tooltip>

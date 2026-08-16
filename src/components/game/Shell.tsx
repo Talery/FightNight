@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { Beer, CircleDollarSign, CloudOff, Dices, Footprints, MonitorCog, ShoppingBag, Skull, Sparkles, Trophy, UserRound } from 'lucide-react'
+import { Backpack, Beer, CircleDollarSign, CloudOff, Dices, Footprints, MonitorCog, ShoppingBag, Skull, Sparkles, Trophy, UserRound } from 'lucide-react'
 import type { Hero, View } from '../../game/types'
 import type { UiTheme } from '../../game/settings'
 import { Tooltip } from '../Tooltip'
@@ -54,7 +54,7 @@ export function TopBar({ hero, online, theme, onThemeToggle }: { hero: Hero; onl
   )
 }
 
-export function MobileNav({ view, onNavigate, onHall }: { view: View; onNavigate: (view: View) => void; onHall: () => void }) {
+export function MobileNav({ view, onNavigate, onHall, onInventory }: { view: View; onNavigate: (view: View) => void; onHall: () => void; onInventory: () => void }) {
   if (view === 'expedition') return null
   return (
     <nav className="mobile-nav" aria-label="Главное меню">
@@ -63,6 +63,7 @@ export function MobileNav({ view, onNavigate, onHall }: { view: View; onNavigate
           <item.icon size={16} />{item.label}
         </button>
       ))}
+      <button onClick={onInventory}><Backpack size={16} />Арсенал</button>
     </nav>
   )
 }
