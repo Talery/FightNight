@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "check": "npm test && npm run build && npm run audit:release && npm run test:pwa && npm run test:e2e",
+    "build:functions": "node scripts/build-verify-daily.mjs",
+    "check:functions": "node scripts/build-verify-daily.mjs --check",
+    "check": "npm run check:functions && npm test && npm run build && npm run audit:release && npm run test:pwa && npm run test:e2e",
     "audit:release": "node scripts/release-audit.mjs",
     "simulate": "vitest run src/game/simulation.report.test.ts --reporter=verbose",
     "package:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-windows.ps1",
@@ -28,6 +30,7 @@
     "@testing-library/react": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "esbuild": "0.28.2",
     "jsdom": "latest",
     "typescript": "latest",
     "vitest": "latest"
